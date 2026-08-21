@@ -4,11 +4,19 @@ import java.util.Scanner;
 public class Dukey {
     private static final String LINE = "____________________________________________________________";
 
-    private static void listAll(ArrayList<String> list) {
-        for (int i = 1; i < list.size() + 1; i++) {
-            String line = String.format("%d. %s", i, list.get(i - 1));
+    private static void listAllTasks(ArrayList<String> taskList, ArrayList<Boolean> isDone) {
+        System.out.println("Here are the tasks in your list:");
+        for (int i = 0; i < taskList.size(); i++) {
+            String status = isDone.get(i) ? "X" : " ";
+            String line = String.format("%d.[%s] %s", i + 1, status, taskList.get(i));
             System.out.println(line);
         }
+    }
+
+    private static void markTask(ArrayList<String> tasks, ArrayList<Boolean> isDone, int taskNumber) {
+        isDone.set(taskNumber, true);
+        System.out.println("Nice! I've marked this task as done:");
+        System.out.println("  [X] " + tasks.get(taskNumber));
     }
 
     public static void main(String[] args) {
@@ -26,7 +34,15 @@ public class Dukey {
 
         boolean conversation = true;
         Scanner scanner = new Scanner(System.in);
-        ArrayList<String> inputs = new ArrayList<>();
+        ArrayList<String> tasks = new ArrayList<>();
+        tasks.add("read book");
+        tasks.add("return book");
+        tasks.add("buy bread");
+
+        ArrayList<Boolean> isDone = new ArrayList<>();
+        isDone.add(true);
+        isDone.add(false);
+        isDone.add(false);
 
         while (conversation && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
@@ -37,9 +53,13 @@ public class Dukey {
                 System.out.println("Bye. Hope to see you again soon!");
                 conversation = false;
             } else if (userInput.equals("list")) {
-                listAll(inputs);
+                listAllTasks(tasks, isDone);
+            } else if (userInput.startsWith("mark ")) {
+                int taskNumber = Integer.parseInt(userInput.substring(5));
+                markTask(tasks, isDone, taskNumber - 1);
             } else {
-                inputs.add(userInput);
+                tasks.add(userInput);
+                isDone.add(false);
                 System.out.println("added: " + userInput);
             }
 
