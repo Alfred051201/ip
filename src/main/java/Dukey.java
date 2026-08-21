@@ -1,7 +1,15 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Dukey {
     private static final String LINE = "____________________________________________________________";
+
+    private static void listAll(ArrayList<String> list) {
+        for (int i = 1; i < list.size() + 1; i++) {
+            String line = String.format("%d. %s", i, list.get(i - 1));
+            System.out.println(line);
+        }
+    }
 
     public static void main(String[] args) {
         String banner = " ____        _              \n"
@@ -18,6 +26,8 @@ public class Dukey {
 
         boolean conversation = true;
         Scanner scanner = new Scanner(System.in);
+        ArrayList<String> inputs = new ArrayList<>();
+
         while (conversation && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
 
@@ -26,8 +36,11 @@ public class Dukey {
             if (userInput.equals("bye")) {
                 System.out.println("Bye. Hope to see you again soon!");
                 conversation = false;
+            } else if (userInput.equals("list")) {
+                listAll(inputs);
             } else {
-                System.out.println(userInput);
+                inputs.add(userInput);
+                System.out.println("added: " + userInput);
             }
 
             System.out.println(LINE);
