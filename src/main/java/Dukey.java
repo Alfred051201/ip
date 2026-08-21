@@ -19,6 +19,12 @@ public class Dukey {
         System.out.println("  [X] " + tasks.get(taskNumber));
     }
 
+    private static void unmarkTask(ArrayList<String> tasks, ArrayList<Boolean> isDone, int taskNumber) {
+        isDone.set(taskNumber, false);
+        System.out.println("OK, I've marked this task as not done yet:");
+        System.out.println("  [ ] " + tasks.get(taskNumber));
+    }
+
     public static void main(String[] args) {
         String banner = " ____        _              \n"
                 + "|  _ \\ _   _| | _____ _   _ \n"
@@ -57,6 +63,9 @@ public class Dukey {
             } else if (userInput.startsWith("mark ")) {
                 int taskNumber = Integer.parseInt(userInput.substring(5));
                 markTask(tasks, isDone, taskNumber - 1);
+            } else if (userInput.startsWith("unmark")) {
+                int taskNumber = Integer.parseInt(userInput.substring(7));
+                unmarkTask(tasks, isDone, taskNumber - 1);
             } else {
                 tasks.add(userInput);
                 isDone.add(false);
