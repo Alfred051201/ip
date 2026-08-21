@@ -4,25 +4,11 @@ import java.util.Scanner;
 public class Dukey {
     private static final String LINE = "____________________________________________________________";
 
-    private static void listAllTasks(ArrayList<String> taskList, ArrayList<Boolean> isDone) {
+    private static void listAllTasks(ArrayList<Task> tasks) {
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskList.size(); i++) {
-            String status = isDone.get(i) ? "X" : " ";
-            String line = String.format("%d.[%s] %s", i + 1, status, taskList.get(i));
-            System.out.println(line);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(String.format("%d.%s", i + 1, tasks.get(i)));
         }
-    }
-
-    private static void markTask(ArrayList<String> tasks, ArrayList<Boolean> isDone, int taskNumber) {
-        isDone.set(taskNumber, true);
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  [X] " + tasks.get(taskNumber));
-    }
-
-    private static void unmarkTask(ArrayList<String> tasks, ArrayList<Boolean> isDone, int taskNumber) {
-        isDone.set(taskNumber, false);
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  [ ] " + tasks.get(taskNumber));
     }
 
     public static void main(String[] args) {
@@ -40,15 +26,10 @@ public class Dukey {
 
         boolean conversation = true;
         Scanner scanner = new Scanner(System.in);
-        ArrayList<String> tasks = new ArrayList<>();
-        tasks.add("read book");
-        tasks.add("return book");
-        tasks.add("buy bread");
-
-        ArrayList<Boolean> isDone = new ArrayList<>();
-        isDone.add(true);
-        isDone.add(false);
-        isDone.add(false);
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new Task("read book", true));
+        tasks.add(new Task("return book"));
+        tasks.add(new Task("buy bread"));
 
         while (conversation && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
@@ -59,16 +40,21 @@ public class Dukey {
                 System.out.println("Bye. Hope to see you again soon!");
                 conversation = false;
             } else if (userInput.equals("list")) {
-                listAllTasks(tasks, isDone);
+                listAllTasks(tasks);
             } else if (userInput.startsWith("mark ")) {
                 int taskNumber = Integer.parseInt(userInput.substring(5));
-                markTask(tasks, isDone, taskNumber - 1);
-            } else if (userInput.startsWith("unmark")) {
+                Task task = tasks.get(taskNumber - 1);
+                task.markAsDone();
+                System.out.println("Nice! I've marked this task as done:");
+                System.out.println("  " + task);
+            } else if (userInput.startsWith("unmark ")) {
                 int taskNumber = Integer.parseInt(userInput.substring(7));
-                unmarkTask(tasks, isDone, taskNumber - 1);
+                Task task = tasks.get(taskNumber - 1);
+                task.markAsUndone();
+                System.out.println("OK, I've marked this task as not done yet:");
+                System.out.println("  " + task);
             } else {
-                tasks.add(userInput);
-                isDone.add(false);
+                tasks.add(new Task(userInput));
                 System.out.println("added: " + userInput);
             }
 
