@@ -11,6 +11,29 @@ public class Dukey {
         }
     }
 
+    private static void getTaskAmount(ArrayList<Task> tasks) {
+        System.out.println(String.format("Now you have %d tasks in the list", tasks.size()));
+    }
+
+    private static String[] parseByKeywords(String input, String... keywords) {
+        String[] result = new String[keywords.length + 1];
+
+        int currentStart = 0;
+
+        for (int i = 0; i < keywords.length; i++) {
+            String keyword = " " + keywords[i] + " ";
+            int keywordIndex = input.indexOf(keyword, currentStart);
+
+            result[i] = input.substring(currentStart, keywordIndex).trim();
+            currentStart = keywordIndex + keyword.length();
+        }
+
+        result[keywords.length] = input.substring(currentStart).trim();
+        return result;
+    }
+
+
+
     public static void main(String[] args) {
         String banner = " ____        _              \n"
                 + "|  _ \\ _   _| | _____ _   _ \n"
@@ -27,9 +50,14 @@ public class Dukey {
         boolean conversation = true;
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks = new ArrayList<>();
-        tasks.add(new Task("read book", true));
-        tasks.add(new Task("return book"));
-        tasks.add(new Task("buy bread"));
+        Task t = new Todo("read book");
+        t.markAsDone();
+        tasks.add(t);
+        tasks.add(new Deadline("return book", "June 6th"));
+        tasks.add(new Event("project meeting", "Aug 6th 2pm", "4pm"));
+        Task t_1 = new Todo("join sports club");
+        t_1.markAsDone();
+        tasks.add(t_1);
 
         while (conversation && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
@@ -53,7 +81,40 @@ public class Dukey {
                 task.markAsUndone();
                 System.out.println("OK, I've marked this task as not done yet:");
                 System.out.println("  " + task);
-            } else {
+            } else if (userInput.startsWith("todo ")) {
+                String todoName = userInput.substring(5);
+                Task newTask = new Todo(todoName);
+                tasks.add(newTask);
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + newTask);
+                getTaskAmount(tasks);
+            } else if (userInput.startsWith("deadline ")) {
+                String input = userInput.substring(9); // after "deadline "
+                String[] parts = parseByKeywords(input, "/by");
+
+                String description = parts[0];
+                String by = parts[1];
+
+                Task newTask = new Deadline(description, by);
+                tasks.add(newTask);
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + newTask);
+                getTaskAmount(tasks);
+            } else if (userInput.startsWith("event ")) {
+                String input = userInput.substring(6); // after "event "
+                String[] parts = parseByKeywords(input, "/from", "/to");
+
+                String description = parts[0];
+                String from = parts[1];
+                String to = parts[2];
+
+                Task newTask = new Event(description, from, to);
+                tasks.add(newTask);
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + newTask);
+                getTaskAmount(tasks);
+            }
+            else {
                 tasks.add(new Task(userInput));
                 System.out.println("added: " + userInput);
             }
