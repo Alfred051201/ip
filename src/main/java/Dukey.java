@@ -15,6 +15,10 @@ public class Dukey {
         System.out.println(String.format("Now you have %d tasks in the list.", tasks.size()));
     }
 
+    private static boolean isCommand(String userInput, String command) {
+        return userInput.equals(command) || userInput.startsWith(command + " ");
+    }
+
     private static String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
         String[] result = new String[keywords.length + 1];
 
@@ -89,7 +93,7 @@ public class Dukey {
                 conversation = false;
             } else if (userInput.equals("list")) {
                 listAllTasks(tasks);
-            } else if (userInput.startsWith("mark")) {
+            } else if (isCommand(userInput, "mark")) {
                 try {
                     String taskNumberText = userInput.substring(4).trim();
                     if (taskNumberText.isEmpty()) {
@@ -110,7 +114,7 @@ public class Dukey {
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
-            } else if (userInput.startsWith("unmark")) {
+            } else if (isCommand(userInput, "unmark")) {
                 try {
                     String taskNumberText = userInput.substring(6).trim();
                     if (taskNumberText.isEmpty()) {
@@ -131,7 +135,7 @@ public class Dukey {
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
-            } else if (userInput.startsWith("todo")) {
+            } else if (isCommand(userInput, "todo")) {
                 try {
                     String todoName = userInput.substring(4).trim();
 
@@ -149,7 +153,7 @@ public class Dukey {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
 
-            } else if (userInput.startsWith("deadline")) {
+            } else if (isCommand(userInput, "deadline")) {
                 try {
                     String input = userInput.substring(8).trim();
                     if (input.isEmpty()) {
@@ -175,7 +179,7 @@ public class Dukey {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
 
-            } else if (userInput.startsWith("event")) {
+            } else if (isCommand(userInput, "event")) {
                 try {
                     String input = userInput.substring(5).trim();
                     if (input.isEmpty()) {
@@ -202,6 +206,28 @@ public class Dukey {
                     System.out.println("  " + newTask);
                     getTaskAmount(tasks);
 
+                } catch (DukeyException e) {
+                    System.out.println(" OOPS!!! " + e.getMessage());
+                }
+            } else if (isCommand(userInput, "delete")) {
+                try {
+                    String taskNumberText = userInput.substring(6).trim();
+                    if (taskNumberText.isEmpty()) {
+                        throw new DukeyException("Please provide a task number to delete.");
+                    }
+
+                    int taskNumber = Integer.parseInt(taskNumberText);
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                        throw new DukeyException("Please provide a valid task number.");
+                    }
+
+                    Task task = tasks.get(taskNumber - 1);
+                    tasks.remove(taskNumber - 1);
+                    System.out.println("Noted. I've removed this task:");
+                    System.out.println("  " + task);
+                    getTaskAmount(tasks);
+                } catch (NumberFormatException e) {
+                    System.out.println(" OOPS!!! Please provide a valid task number.");
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
