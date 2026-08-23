@@ -15,7 +15,7 @@ public class Dukey {
         System.out.println(String.format("Now you have %d tasks in the list.", tasks.size()));
     }
 
-    private static String[] parseByKeywords(String input, String... keywords) {
+    private static String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
         String[] result = new String[keywords.length + 1];
 
         int currentStart = 0;
@@ -24,6 +24,11 @@ public class Dukey {
             String keyword = keywords[i];
 
             int keywordIndex = input.indexOf(keyword, currentStart);
+
+            if (keywordIndex == -1) {
+                throw new DukeyException(errorMessage);
+            }
+
             while (keywordIndex != -1
                     && ((keywordIndex > 0 && input.charAt(keywordIndex - 1) != ' ')
                     || (keywordIndex + keyword.length() < input.length()
@@ -32,11 +37,12 @@ public class Dukey {
             }
 
             if (keywordIndex == -1) {
-                return null;
+                throw new DukeyException(errorMessage);
             }
 
             result[i] = input.substring(currentStart, keywordIndex).trim();
             currentStart = keywordIndex + keyword.length();
+
             while (currentStart < input.length() && input.charAt(currentStart) == ' ') {
                 currentStart++;
             }
@@ -84,72 +90,120 @@ public class Dukey {
             } else if (userInput.equals("list")) {
                 listAllTasks(tasks);
             } else if (userInput.startsWith("mark")) {
-                int taskNumber = Integer.parseInt(userInput.substring(4).strip());
-                Task task = tasks.get(taskNumber - 1);
-                task.markAsDone();
-                System.out.println("Nice! I've marked this task as done:");
-                System.out.println("  " + task);
+                try {
+                    String taskNumberText = userInput.substring(4).trim();
+                    if (taskNumberText.isEmpty()) {
+                        throw new DukeyException("Please provide a task number to mark.");
+                    }
+
+                    int taskNumber = Integer.parseInt(taskNumberText);
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                        throw new DukeyException("Please provide a valid task number.");
+                    }
+
+                    Task task = tasks.get(taskNumber - 1);
+                    task.markAsDone();
+                    System.out.println("Nice! I've marked this task as done:");
+                    System.out.println("  " + task);
+                } catch (NumberFormatException e) {
+                    System.out.println(" OOPS!!! Please provide a valid task number.");
+                } catch (DukeyException e) {
+                    System.out.println(" OOPS!!! " + e.getMessage());
+                }
             } else if (userInput.startsWith("unmark")) {
-                int taskNumber = Integer.parseInt(userInput.substring(6).strip());
-                Task task = tasks.get(taskNumber - 1);
-                task.markAsUndone();
-                System.out.println("OK, I've marked this task as not done yet:");
-                System.out.println("  " + task);
+                try {
+                    String taskNumberText = userInput.substring(6).trim();
+                    if (taskNumberText.isEmpty()) {
+                        throw new DukeyException("Please provide a task number to unmark.");
+                    }
+
+                    int taskNumber = Integer.parseInt(taskNumberText);
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                        throw new DukeyException("Please provide a valid task number.");
+                    }
+
+                    Task task = tasks.get(taskNumber - 1);
+                    task.markAsUndone();
+                    System.out.println("OK, I've marked this task as not done yet:");
+                    System.out.println("  " + task);
+                } catch (NumberFormatException e) {
+                    System.out.println(" OOPS!!! Please provide a valid task number.");
+                } catch (DukeyException e) {
+                    System.out.println(" OOPS!!! " + e.getMessage());
+                }
             } else if (userInput.startsWith("todo")) {
-                String todoName = userInput.substring(4).strip();
-                if (todoName.isEmpty()) {
-                    System.out.println(" OOPS!!! The description of a todo cannot be empty.");
-                } else {
+                try {
+                    String todoName = userInput.substring(4).trim();
+
+                    if (todoName.isEmpty()) {
+                        throw new DukeyException("The description of a todo cannot be empty.");
+                    }
+
                     Task newTask = new Todo(todoName);
                     tasks.add(newTask);
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + newTask);
                     getTaskAmount(tasks);
-                }
-            } else if (userInput.startsWith("deadline")) {
-                String input = userInput.substring(8).trim(); // after "deadline "
-                if (input.isEmpty()) {
-                    System.out.println(" OOPS!!! Please provide a deadline task description.");
-                } else {
-                    String[] parts = parseByKeywords(input, "/by");
 
-                    if (parts == null) {
-                        System.out.println(" OOPS!!! Please use: deadline DESCRIPTION /by WHEN");
-                    } else if (parts[0].isEmpty()) {
-                        System.out.println(" OOPS!!! Please provide a deadline task description.");
-                    } else if (parts[1].isEmpty()) {
-                        System.out.println(" OOPS!!! Please provide a deadline task date/time after /by.");
-                    } else {
-                        Task newTask = new Deadline(parts[0], parts[1]);
-                        tasks.add(newTask);
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + newTask);
-                        getTaskAmount(tasks);
+                } catch (DukeyException e) {
+                    System.out.println(" OOPS!!! " + e.getMessage());
+                }
+
+            } else if (userInput.startsWith("deadline")) {
+                try {
+                    String input = userInput.substring(8).trim();
+                    if (input.isEmpty()) {
+                        throw new DukeyException("Please provide a deadline task description.");
                     }
+                    String[] parts = parseByKeywords(input, "Please use: deadline {DESCRIPTION} /by {WHEN}", "/by");
+
+                    if (parts[0].isEmpty()) {
+                        throw new DukeyException("Please provide a deadline task description.");
+                    }
+
+                    if (parts[1].isEmpty()) {
+                        throw new DukeyException("Please provide a deadline task date/time after /by.");
+                    }
+
+                    Task newTask = new Deadline(parts[0], parts[1]);
+                    tasks.add(newTask);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + newTask);
+                    getTaskAmount(tasks);
+
+                } catch (DukeyException e) {
+                    System.out.println(" OOPS!!! " + e.getMessage());
                 }
 
             } else if (userInput.startsWith("event")) {
-                String input = userInput.substring(5).trim(); // after "event "
-                if (input.isEmpty()) {
-                    System.out.println(" OOPS!!! Please provide a event task description.");
-                } else {
-                    String[] parts = parseByKeywords(input, "/from", "/to");
-
-                    if (parts == null) {
-                        System.out.println(" OOPS!!! Please use: event DESCRIPTION /from WHEN /to WHEN");
-                    } else if (parts[0].isEmpty()) {
-                        System.out.println(" OOPS!!! Please provide a event task description.");
-                    } else if (parts[1].isEmpty()) {
-                        System.out.println(" OOPS!!! Please provide a event task date/time after /from.");
-                    } else if (parts[2].isEmpty()) {
-                        System.out.println(" OOPS!!! Please provide a event task date/time after /to.");
-                    } else {
-                        Task newTask = new Event(parts[0], parts[1], parts[2]);
-                        tasks.add(newTask);
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + newTask);
-                        getTaskAmount(tasks);
+                try {
+                    String input = userInput.substring(5).trim();
+                    if (input.isEmpty()) {
+                        throw new DukeyException("Please provide a event task description.");
                     }
+                    String[] parts = parseByKeywords(input, "Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}",
+                            "/from", "/to");
+
+                    if (parts[0].isEmpty()) {
+                        throw new DukeyException("Please provide a event task description.");
+                    }
+
+                    if (parts[1].isEmpty()) {
+                        throw new DukeyException("Please provide a event task date/time after /from.");
+                    }
+
+                    if (parts[2].isEmpty()) {
+                        throw new DukeyException("Please provide a event task date/time after /to.");
+                    }
+
+                    Task newTask = new Event(parts[0], parts[1], parts[2]);
+                    tasks.add(newTask);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + newTask);
+                    getTaskAmount(tasks);
+
+                } catch (DukeyException e) {
+                    System.out.println(" OOPS!!! " + e.getMessage());
                 }
             } else {
                 System.out.println(" OOPS!!! I'm sorry, but I don't know what that means :-(");
