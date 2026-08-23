@@ -15,8 +15,9 @@ public class Dukey {
         System.out.println(String.format("Now you have %d tasks in the list.", tasks.size()));
     }
 
-    private static boolean isCommand(String userInput, String command) {
-        return userInput.equals(command) || userInput.startsWith(command + " ");
+    private static boolean isCommand(String userInput, Command command) {
+        String commandWord = command.getWord();
+        return userInput.equals(commandWord) || userInput.startsWith(commandWord + " ");
     }
 
     private static String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
@@ -88,12 +89,12 @@ public class Dukey {
 
             System.out.println(LINE);
 
-            if (userInput.equals("bye")) {
+            if (isCommand(userInput, Command.BYE)) {
                 System.out.println("Bye. Hope to see you again soon!");
                 conversation = false;
-            } else if (userInput.equals("list")) {
+            } else if (isCommand(userInput, Command.LIST)) {
                 listAllTasks(tasks);
-            } else if (isCommand(userInput, "mark")) {
+            } else if (isCommand(userInput, Command.MARK)) {
                 try {
                     String taskNumberText = userInput.substring(4).trim();
                     if (taskNumberText.isEmpty()) {
@@ -114,7 +115,7 @@ public class Dukey {
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
-            } else if (isCommand(userInput, "unmark")) {
+            } else if (isCommand(userInput, Command.UNMARK)) {
                 try {
                     String taskNumberText = userInput.substring(6).trim();
                     if (taskNumberText.isEmpty()) {
@@ -135,7 +136,7 @@ public class Dukey {
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
-            } else if (isCommand(userInput, "todo")) {
+            } else if (isCommand(userInput, Command.TODO)) {
                 try {
                     String todoName = userInput.substring(4).trim();
 
@@ -153,7 +154,7 @@ public class Dukey {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
 
-            } else if (isCommand(userInput, "deadline")) {
+            } else if (isCommand(userInput, Command.DEADLINE)) {
                 try {
                     String input = userInput.substring(8).trim();
                     if (input.isEmpty()) {
@@ -179,7 +180,7 @@ public class Dukey {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
 
-            } else if (isCommand(userInput, "event")) {
+            } else if (isCommand(userInput, Command.EVENT)) {
                 try {
                     String input = userInput.substring(5).trim();
                     if (input.isEmpty()) {
@@ -209,7 +210,7 @@ public class Dukey {
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
                 }
-            } else if (isCommand(userInput, "delete")) {
+            } else if (isCommand(userInput, Command.DELETE)) {
                 try {
                     String taskNumberText = userInput.substring(6).trim();
                     if (taskNumberText.isEmpty()) {
