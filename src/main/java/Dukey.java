@@ -12,7 +12,7 @@ public class Dukey {
     }
 
     private static void getTaskAmount(ArrayList<Task> tasks) {
-        System.out.println(String.format("Now you have %d tasks in the list", tasks.size()));
+        System.out.println(String.format("Now you have %d tasks in the list.", tasks.size()));
     }
 
     private static String[] parseByKeywords(String input, String... keywords) {
@@ -21,11 +21,25 @@ public class Dukey {
         int currentStart = 0;
 
         for (int i = 0; i < keywords.length; i++) {
-            String keyword = " " + keywords[i] + " ";
+            String keyword = keywords[i];
+
             int keywordIndex = input.indexOf(keyword, currentStart);
+            while (keywordIndex != -1
+                    && ((keywordIndex > 0 && input.charAt(keywordIndex - 1) != ' ')
+                    || (keywordIndex + keyword.length() < input.length()
+                    && input.charAt(keywordIndex + keyword.length()) != ' '))) {
+                keywordIndex = input.indexOf(keyword, keywordIndex + 1);
+            }
+
+            if (keywordIndex == -1) {
+                return null;
+            }
 
             result[i] = input.substring(currentStart, keywordIndex).trim();
             currentStart = keywordIndex + keyword.length();
+            while (currentStart < input.length() && input.charAt(currentStart) == ' ') {
+                currentStart++;
+            }
         }
 
         result[keywords.length] = input.substring(currentStart).trim();
@@ -69,54 +83,76 @@ public class Dukey {
                 conversation = false;
             } else if (userInput.equals("list")) {
                 listAllTasks(tasks);
-            } else if (userInput.startsWith("mark ")) {
-                int taskNumber = Integer.parseInt(userInput.substring(5));
+            } else if (userInput.startsWith("mark")) {
+                int taskNumber = Integer.parseInt(userInput.substring(4).strip());
                 Task task = tasks.get(taskNumber - 1);
                 task.markAsDone();
                 System.out.println("Nice! I've marked this task as done:");
                 System.out.println("  " + task);
-            } else if (userInput.startsWith("unmark ")) {
-                int taskNumber = Integer.parseInt(userInput.substring(7));
+            } else if (userInput.startsWith("unmark")) {
+                int taskNumber = Integer.parseInt(userInput.substring(6).strip());
                 Task task = tasks.get(taskNumber - 1);
                 task.markAsUndone();
                 System.out.println("OK, I've marked this task as not done yet:");
                 System.out.println("  " + task);
-            } else if (userInput.startsWith("todo ")) {
-                String todoName = userInput.substring(5);
-                Task newTask = new Todo(todoName);
-                tasks.add(newTask);
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + newTask);
-                getTaskAmount(tasks);
-            } else if (userInput.startsWith("deadline ")) {
-                String input = userInput.substring(9); // after "deadline "
-                String[] parts = parseByKeywords(input, "/by");
+            } else if (userInput.startsWith("todo")) {
+                String todoName = userInput.substring(4).strip();
+                if (todoName.isEmpty()) {
+                    System.out.println(" OOPS!!! The description of a todo cannot be empty.");
+                } else {
+                    Task newTask = new Todo(todoName);
+                    tasks.add(newTask);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + newTask);
+                    getTaskAmount(tasks);
+                }
+            } else if (userInput.startsWith("deadline")) {
+                String input = userInput.substring(8).trim(); // after "deadline "
+                if (input.isEmpty()) {
+                    System.out.println(" OOPS!!! Please provide a deadline task description.");
+                } else {
+                    String[] parts = parseByKeywords(input, "/by");
 
-                String description = parts[0];
-                String by = parts[1];
+                    if (parts == null) {
+                        System.out.println(" OOPS!!! Please use: deadline DESCRIPTION /by WHEN");
+                    } else if (parts[0].isEmpty()) {
+                        System.out.println(" OOPS!!! Please provide a deadline task description.");
+                    } else if (parts[1].isEmpty()) {
+                        System.out.println(" OOPS!!! Please provide a deadline task date/time after /by.");
+                    } else {
+                        Task newTask = new Deadline(parts[0], parts[1]);
+                        tasks.add(newTask);
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println("  " + newTask);
+                        getTaskAmount(tasks);
+                    }
+                }
 
-                Task newTask = new Deadline(description, by);
-                tasks.add(newTask);
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + newTask);
-                getTaskAmount(tasks);
-            } else if (userInput.startsWith("event ")) {
-                String input = userInput.substring(6); // after "event "
-                String[] parts = parseByKeywords(input, "/from", "/to");
+            } else if (userInput.startsWith("event")) {
+                String input = userInput.substring(5).trim(); // after "event "
+                if (input.isEmpty()) {
+                    System.out.println(" OOPS!!! Please provide a event task description.");
+                } else {
+                    String[] parts = parseByKeywords(input, "/from", "/to");
 
-                String description = parts[0];
-                String from = parts[1];
-                String to = parts[2];
-
-                Task newTask = new Event(description, from, to);
-                tasks.add(newTask);
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + newTask);
-                getTaskAmount(tasks);
-            }
-            else {
-                tasks.add(new Task(userInput));
-                System.out.println("added: " + userInput);
+                    if (parts == null) {
+                        System.out.println(" OOPS!!! Please use: event DESCRIPTION /from WHEN /to WHEN");
+                    } else if (parts[0].isEmpty()) {
+                        System.out.println(" OOPS!!! Please provide a event task description.");
+                    } else if (parts[1].isEmpty()) {
+                        System.out.println(" OOPS!!! Please provide a event task date/time after /from.");
+                    } else if (parts[2].isEmpty()) {
+                        System.out.println(" OOPS!!! Please provide a event task date/time after /to.");
+                    } else {
+                        Task newTask = new Event(parts[0], parts[1], parts[2]);
+                        tasks.add(newTask);
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println("  " + newTask);
+                        getTaskAmount(tasks);
+                    }
+                }
+            } else {
+                System.out.println(" OOPS!!! I'm sorry, but I don't know what that means :-(");
             }
 
             System.out.println(LINE);
