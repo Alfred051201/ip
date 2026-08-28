@@ -22,12 +22,15 @@ class TestCase:
     aim: str
     input_text: str
     expected_output: str
+    initial_data: str | None
+    expected_data: str | None
 
 
 @dataclass
 class TestPlan:
     program_command: str
     compile_command: str | None
+    data_file: str | None
     test_cases: list[TestCase]
 
 
@@ -49,6 +52,16 @@ def extract_labeled_fence(section: str, label: str) -> str:
     label_match = re.search(rf"^{re.escape(label)}:\s*$", section, re.MULTILINE)
     if not label_match:
         raise PlanError(f"Missing '{label}:' block")
+    fence_match = FENCE_RE.search(section, label_match.end())
+    if not fence_match:
+        raise PlanError(f"Missing fenced code block after '{label}:'")
+    return fence_match.group(1)
+
+
+def extract_optional_labeled_fence(section: str, label: str) -> str | None:
+    label_match = re.search(rf"^{re.escape(label)}:\s*$", section, re.MULTILINE)
+    if not label_match:
+        return None
     fence_match = FENCE_RE.search(section, label_match.end())
     if not fence_match:
         raise PlanError(f"Missing fenced code block after '{label}:'")
@@ -77,6 +90,8 @@ def parse_test_cases(markdown: str) -> list[TestCase]:
                 aim=aim_match.group(1),
                 input_text=extract_labeled_fence(section, "Input"),
                 expected_output=extract_labeled_fence(section, "Expected output"),
+                initial_data=extract_optional_labeled_fence(section, "Initial data"),
+                expected_data=extract_optional_labeled_fence(section, "Expected data"),
             )
         )
     return test_cases
@@ -86,8 +101,9 @@ def parse_plan(path: Path) -> TestPlan:
     markdown = path.read_text(encoding="utf-8")
     program_command = extract_backtick_value(markdown, "Program command", required=True)
     compile_command = extract_backtick_value(markdown, "Compile command", required=False)
+    data_file = extract_backtick_value(markdown, "Data file", required=False)
     assert program_command is not None
-    return TestPlan(program_command, compile_command, parse_test_cases(markdown))
+    return TestPlan(program_command, compile_command, data_file, parse_test_cases(markdown))
 
 
 def comparable(text: str) -> str:
@@ -105,7 +121,7 @@ def run_shell(command: str, input_text: str | None = None, timeout: int = 10) ->
     )
 
 
-def append_transcript(path: Path, test_case: TestCase, actual_output: str, passed: bool) -> None:
+def append_transcript(path: Path, test_case: TestCase, actual_output: str, actual_data: str | None, passed: bool) -> None:
     with path.open("a", encoding="utf-8") as transcript:
         transcript.write(f"## {test_case.name}\n\n")
         transcript.write(f"Aim: {test_case.aim}\n\n")
@@ -117,6 +133,11 @@ def append_transcript(path: Path, test_case: TestCase, actual_output: str, passe
         transcript.write("```text\n")
         transcript.write(actual_output)
         transcript.write("\n```\n\n")
+        if actual_data is not None:
+            transcript.write("Data file after test:\n\n")
+            transcript.write("```text\n")
+            transcript.write(actual_data)
+            transcript.write("\n```\n\n")
         transcript.write(f"Result: {'PASS' if passed else 'FAIL'}\n\n")
 
 
@@ -138,6 +159,19 @@ def print_failure(test_case: TestCase, expected: str, actual: str) -> None:
     actual_lines = comparable(actual).splitlines()
     for line in difflib.unified_diff(expected_lines, actual_lines, fromfile="expected", tofile="actual", lineterm=""):
         print(line)
+
+
+def write_data_file(data_file: str, content: str) -> None:
+    path = Path(data_file)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content + "\n", encoding="utf-8")
+
+
+def read_data_file(data_file: str) -> str:
+    path = Path(data_file)
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8").rstrip("\n")
 
 
 def main() -> int:
@@ -167,6 +201,12 @@ def main() -> int:
             return compile_result.returncode
 
     for index, test_case in enumerate(plan.test_cases, start=1):
+        if test_case.initial_data is not None:
+            if plan.data_file is None:
+                print(f"Test '{test_case.name}' has Initial data but no Data file is configured", file=sys.stderr)
+                return 2
+            write_data_file(plan.data_file, comparable(test_case.initial_data))
+
         try:
             result = run_shell(plan.program_command, input_text=test_case.input_text + "\n", timeout=args.timeout)
         except subprocess.TimeoutExpired:
@@ -178,13 +218,29 @@ def main() -> int:
         if result.stderr:
             actual += result.stderr
 
+        actual_data = read_data_file(plan.data_file) if plan.data_file is not None else None
         passed = result.returncode == 0 and comparable(actual) == comparable(test_case.expected_output)
-        append_transcript(transcript_path, test_case, actual, passed)
+        if passed and test_case.expected_data is not None:
+            passed = comparable(actual_data or "") == comparable(test_case.expected_data)
+        append_transcript(transcript_path, test_case, actual, actual_data, passed)
 
         if not passed:
             if result.returncode != 0:
                 print(f"Program exited with status {result.returncode}")
-            print_failure(test_case, test_case.expected_output, actual)
+            if comparable(actual) != comparable(test_case.expected_output):
+                print_failure(test_case, test_case.expected_output, actual)
+            elif test_case.expected_data is not None:
+                print(f"FAIL: {test_case.name}")
+                print()
+                print("Expected data file:")
+                print("```text")
+                print(test_case.expected_data)
+                print("```")
+                print()
+                print("Actual data file:")
+                print("```text")
+                print(actual_data or "")
+                print("```")
             print(f"\nStopped after failing test {index}/{len(plan.test_cases)}.")
             print(f"Transcript: {transcript_path.resolve()}")
             return 1

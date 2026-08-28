@@ -2,37 +2,19 @@
 
 Program command: `java -cp src/main/java Dukey`
 Compile command: `javac src/main/java/*.java`
+Data file: `src/main/data/dukey.txt`
 
-## Test Case: Exits on bye
+## Test Case: Loads tasks from disk
 
-Aim: Verify that the chatbot starts, accepts `bye`, and exits with the farewell message.
+Aim: Verify that the chatbot loads todo, deadline, and event tasks from the data file when it starts.
 
-Input:
+Initial data:
 ```text
-bye
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
 ```
-
-Expected output:
-```text
-____________________________________________________________
- ____        _              
-|  _ \ _   _| | _____ _   _ 
-| | | | | | | |/ / _ \ | | |
-| |_| | |_| |   <  __/ |_| |
-|____/ \__,_|_|\_\___|\__, |
-                       |___/ 
-
-Hello! I'm Dukey.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
-
-## Test Case: Lists initial task types
-
-Aim: Verify that the initial list shows todo, deadline, and event tasks with the correct type icons and status icons.
 
 Input:
 ```text
@@ -65,14 +47,29 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-## Test Case: Adds a todo task
+Expected data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
+```
 
-Aim: Verify that `todo` creates a Todo task, shows the added task, updates the task count, and includes the task in `list`.
+## Test Case: Saves added todo automatically
+
+Aim: Verify that adding a todo updates the data file without needing another task-list command.
+
+Initial data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
+```
 
 Input:
 ```text
 todo borrow book
-list
 bye
 ```
 
@@ -95,27 +92,35 @@ Got it. I've added this task:
 Now you have 5 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
-1.[T][X] read book
-2.[D][ ] return book (by: June 6th)
-3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
-4.[T][X] join sports club
-5.[T][ ] borrow book
-____________________________________________________________
-____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-## Test Case: Adds deadline and event tasks
+Expected data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
+T | 0 | borrow book
+```
 
-Aim: Verify that `deadline` and `event` commands parse their keywords and create the correct task subclasses.
+## Test Case: Saves added deadline and event automatically
+
+Aim: Verify that added deadline and event tasks are saved in the data file using their file formats.
+
+Initial data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
+```
 
 Input:
 ```text
 deadline return book /by Sunday
 event project meeting /from Mon 2pm /to 4pm
-list
 bye
 ```
 
@@ -143,26 +148,139 @@ Got it. I've added this task:
 Now you have 6 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
-1.[T][X] read book
-2.[D][ ] return book (by: June 6th)
-3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
-4.[T][X] join sports club
-5.[D][ ] return book (by: Sunday)
-6.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Expected data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
+D | 0 | return book | Sunday
+E | 0 | project meeting | Mon 2pm-4pm
+```
+
+## Test Case: Saves mark and unmark automatically
+
+Aim: Verify that marking and unmarking tasks updates the saved done statuses.
+
+Initial data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
+```
+
+Input:
+```text
+mark 2
+unmark 4
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ____        _              
+|  _ \ _   _| | _____ _   _ 
+| | | | | | | |/ / _ \ | | |
+| |_| | |_| |   <  __/ |_| |
+|____/ \__,_|_|\_\___|\__, |
+                       |___/ 
+
+Hello! I'm Dukey.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: June 6th)
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [T][ ] join sports club
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-## Test Case: Handles todo and unknown command errors
+Expected data:
+```text
+T | 1 | read book
+D | 1 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 0 | join sports club
+```
 
-Aim: Verify that empty `todo` input and unknown commands show error messages instead of adding tasks.
+## Test Case: Saves delete automatically
+
+Aim: Verify that deleting a task removes it from the data file.
+
+Initial data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
+```
+
+Input:
+```text
+delete 3
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ____        _              
+|  _ \ _   _| | _____ _   _ 
+| | | | | | | |/ / _ \ | | |
+| |_| | |_| |   <  __/ |_| |
+|____/ \__,_|_|\_\___|\__, |
+                       |___/ 
+
+Hello! I'm Dukey.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Expected data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+T | 1 | join sports club
+```
+
+## Test Case: Does not save invalid commands as tasks
+
+Aim: Verify that command errors do not change the saved task data.
+
+Initial data:
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
+```
 
 Input:
 ```text
 todo
+deadline return book Sunday
+event project meeting /from Mon 2pm /to
+delete 999
 blah
 bye
 ```
@@ -184,6 +302,15 @@ ____________________________________________________________
  OOPS!!! The description of a todo cannot be empty.
 ____________________________________________________________
 ____________________________________________________________
+ OOPS!!! Please use: deadline {DESCRIPTION} /by {WHEN}
+____________________________________________________________
+____________________________________________________________
+ OOPS!!! Please provide a event task date/time after /to.
+____________________________________________________________
+____________________________________________________________
+ OOPS!!! Please provide a valid task number.
+____________________________________________________________
+____________________________________________________________
  OOPS!!! I'm sorry, but I don't know what that means :-(
 ____________________________________________________________
 ____________________________________________________________
@@ -191,174 +318,10 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-## Test Case: Handles mark and unmark errors
-
-Aim: Verify that missing, non-numeric, and out-of-range task numbers are reported without crashing.
-
-Input:
+Expected data:
 ```text
-mark
-mark abc
-mark 999
-unmark
-unmark abc
-unmark 999
-bye
-```
-
-Expected output:
-```text
-____________________________________________________________
- ____        _              
-|  _ \ _   _| | _____ _   _ 
-| | | | | | | |/ / _ \ | | |
-| |_| | |_| |   <  __/ |_| |
-|____/ \__,_|_|\_\___|\__, |
-                       |___/ 
-
-Hello! I'm Dukey.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a task number to mark.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a valid task number.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a valid task number.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a task number to unmark.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a valid task number.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a valid task number.
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
-
-## Test Case: Handles deadline command errors
-
-Aim: Verify that invalid deadline commands report missing descriptions, missing `/by`, and missing `/by` values.
-
-Input:
-```text
-deadline
-deadline return book Sunday
-deadline /by Sunday
-deadline return book /by
-bye
-```
-
-Expected output:
-```text
-____________________________________________________________
- ____        _              
-|  _ \ _   _| | _____ _   _ 
-| | | | | | | |/ / _ \ | | |
-| |_| | |_| |   <  __/ |_| |
-|____/ \__,_|_|\_\___|\__, |
-                       |___/ 
-
-Hello! I'm Dukey.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a deadline task description.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please use: deadline {DESCRIPTION} /by {WHEN}
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a deadline task description.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a deadline task date/time after /by.
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
-
-## Test Case: Handles event command errors
-
-Aim: Verify that invalid event commands report missing descriptions, missing keywords, and missing `/from` or `/to` values.
-
-Input:
-```text
-event
-event project meeting
-event /from Mon 2pm /to 4pm
-event project meeting /from /to 4pm
-event project meeting /from Mon 2pm /to
-bye
-```
-
-Expected output:
-```text
-____________________________________________________________
- ____        _              
-|  _ \ _   _| | _____ _   _ 
-| | | | | | | |/ / _ \ | | |
-| |_| | |_| |   <  __/ |_| |
-|____/ \__,_|_|\_\___|\__, |
-                       |___/ 
-
-Hello! I'm Dukey.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a event task description.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a event task description.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a event task date/time after /from.
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please provide a event task date/time after /to.
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
-```
-
-## Test Case: Handles malformed attached event keyword
-
-Aim: Verify that an attached keyword such as `/to4pm` reports a command format error instead of crashing.
-
-Input:
-```text
-event project meeting /from Mon 2pm /to4pm
-bye
-```
-
-Expected output:
-```text
-____________________________________________________________
- ____        _              
-|  _ \ _   _| | _____ _   _ 
-| | | | | | | |/ / _ \ | | |
-| |_| | |_| |   <  __/ |_| |
-|____/ \__,_|_|\_\___|\__, |
-                       |___/ 
-
-Hello! I'm Dukey.
-What can I do for you?
-____________________________________________________________
-____________________________________________________________
- OOPS!!! Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}
-____________________________________________________________
-____________________________________________________________
-Bye. Hope to see you again soon!
-____________________________________________________________
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm-4pm
+T | 1 | join sports club
 ```
