@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -58,7 +59,37 @@ public class Dukey {
         return result;
     }
 
+    private static void loadFileTasks(ArrayList<Task> tasks, String filePath) throws FileNotFoundException {
+        File f = new File(filePath); // create a File for the given file path
+        Scanner s = new Scanner(f); // create a Scanner using the File as the source
+        while (s.hasNext()) {
+            String[] parts = s.nextLine().split(" \\| ");
 
+            if (parts[0].equals("T")) {
+                Task newTask = new Todo(parts[2]);
+                if (parts[1].equals("1")) {
+                    newTask.markAsDone();
+                }
+                tasks.add(newTask);
+            } else if (parts[0].equals("D")) {
+                Task newTask = new Deadline(parts[2], parts[3]);
+                if (parts[1].equals("1")) {
+                    newTask.markAsDone();
+                }
+                tasks.add(newTask);
+            } else if (parts[0].equals("E")) {
+                String[] subparts = parts[3].split("-");
+                Task newTask = new Event(parts[2], subparts[0], subparts[1]);
+                if (parts[1].equals("1")) {
+                    newTask.markAsDone();
+                }
+                tasks.add(newTask);
+            } else {
+                System.out.println("No relevant command");
+            }
+            // System.out.println(s.nextLine());
+        }
+    }
 
     public static void main(String[] args) {
         String banner = " ____        _              \n"
@@ -77,18 +108,12 @@ public class Dukey {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks = new ArrayList<>();
 
-        File f = new File("src/main/data/dukey.txt");
-        System.out.println("full path: " + f.getAbsolutePath());
-        System.out.println(f.exists());
-
-        Task t = new Todo("read book");
-        t.markAsDone();
-        tasks.add(t);
-        tasks.add(new Deadline("return book", "June 6th"));
-        tasks.add(new Event("project meeting", "Aug 6th 2pm", "4pm"));
-        Task t_1 = new Todo("join sports club");
-        t_1.markAsDone();
-        tasks.add(t_1);
+        // access file content and return error if file not found
+        try {
+            loadFileTasks(tasks, "src/main/data/dukey.txt");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        }
 
         while (conversation && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
