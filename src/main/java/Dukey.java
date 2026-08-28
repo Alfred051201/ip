@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -75,6 +76,11 @@ public class Dukey {
         boolean conversation = true;
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks = new ArrayList<>();
+
+        File f = new File("src/main/data/dukey.txt");
+        System.out.println("full path: " + f.getAbsolutePath());
+        System.out.println(f.exists());
+
         Task t = new Todo("read book");
         t.markAsDone();
         tasks.add(t);
