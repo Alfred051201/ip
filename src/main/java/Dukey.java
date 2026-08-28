@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -91,7 +93,16 @@ public class Dukey {
         }
     }
 
-    public static void main(String[] args) {
+    private static void writeToTaskFile(String filePath, ArrayList<Task> tasks) throws IOException {
+        FileWriter fw = new FileWriter(filePath);
+        for (Task t : tasks) {
+            fw.write(t.toFileString());
+            fw.write(System.lineSeparator());
+        }
+        fw.close();
+    }
+
+    public static void main(String[] args) throws IOException {
         String banner = " ____        _              \n"
                 + "|  _ \\ _   _| | _____ _   _ \n"
                 + "| | | | | | | |/ / _ \\ | | |\n"
@@ -109,8 +120,9 @@ public class Dukey {
         ArrayList<Task> tasks = new ArrayList<>();
 
         // access file content and return error if file not found
+        String taskFilePath = "src/main/data/dukey.txt";
         try {
-            loadFileTasks(tasks, "src/main/data/dukey.txt");
+            loadFileTasks(tasks, taskFilePath);
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         }
@@ -122,6 +134,11 @@ public class Dukey {
 
             if (isCommand(userInput, Command.BYE)) {
                 System.out.println("Bye. Hope to see you again soon!");
+                try {
+                    writeToTaskFile(taskFilePath, tasks);
+                } catch (IOException e) {
+                    System.out.println("Something went wrong: " + e.getMessage());
+                }
                 conversation = false;
             } else if (isCommand(userInput, Command.LIST)) {
                 listAllTasks(tasks);
