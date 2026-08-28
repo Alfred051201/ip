@@ -16,10 +16,16 @@ Keep test cases in `test/ui-test-plan.md` using this shape:
 
 Program command: `java -cp src/main/java Dukey`
 Compile command: `javac src/main/java/*.java`
+Data file: `src/main/data/dukey.txt`
 
 ## Test Case: Greets and exits
 
 Aim: Verify that `bye` exits the chatbot.
+
+Initial data:
+```text
+T | 1 | read book
+```
 
 Input:
 ```text
@@ -34,7 +40,7 @@ ____________________________________________________________
 ```
 ````
 
-The compile command is optional. The program command is required. If the user provides test cases in the prompt, record or update them in `test/ui-test-plan.md` before running the tests.
+The compile command and data file are optional. The program command is required. Use `Initial data` to reset the data file before a test. Use `Expected data` to check the saved data file after a test. If the user provides test cases in the prompt, record or update them in `test/ui-test-plan.md` before running the tests.
 
 ## Run Tests
 
@@ -44,7 +50,7 @@ From the repository root, run:
 python3 .codex/skills/test-ui/scripts/run-ui-tests.py --plan test/ui-test-plan.md
 ```
 
-The runner compiles first when `Compile command:` is present, then runs the program once per test case with that test case's `Input` block as standard input.
+The runner compiles first when `Compile command:` is present, writes `Initial data` to `Data file` when present, then runs the program once per test case with that test case's `Input` block as standard input.
 
 ## Report Results
 
