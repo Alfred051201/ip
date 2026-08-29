@@ -8,10 +8,14 @@ public class Event extends Task{
     protected LocalDateTime from;
     protected LocalDateTime to;
 
-    public Event(String description, String from, String to) {
+    public Event(String description, String from, String to) throws DukeyException {
         super(description);
         this.from = LocalDateTime.parse(from, INPUT_FORMAT);
         this.to = LocalDateTime.parse(to, INPUT_FORMAT);
+
+        if (this.from.isAfter(this.to)) {
+            throw new DukeyException("Event start date/time cannot be later than end date/time.");
+        }
     }
 
     @Override

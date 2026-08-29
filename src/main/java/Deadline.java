@@ -7,9 +7,13 @@ public class Deadline extends Task{
 
     protected LocalDateTime by;
 
-    public Deadline(String description, String by) {
+    public Deadline(String description, String by) throws DukeyException {
         super(description);
         this.by = LocalDateTime.parse(by, INPUT_FORMAT);
+
+        if (this.by.isBefore(LocalDateTime.now())) {
+            throw new DukeyException("Deadline date/time cannot be in the past.");
+        }
     }
 
     @Override
