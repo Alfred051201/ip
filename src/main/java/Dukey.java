@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -102,14 +103,10 @@ public class Dukey {
                     }
                     newTask = new Deadline(parts[2], parts[3]);
                 } else {
-                    if (parts.length < 4 || parts[3].isEmpty()) {
+                    if (parts.length < 5 || parts[3].isEmpty() || parts[4].isEmpty()) {
                         throw new DukeyException("Event date/time is missing for this task.");
                     }
-                    String[] subparts = parts[3].split("-", 2);
-                    if (subparts.length < 2 || subparts[0].isEmpty() || subparts[1].isEmpty()) {
-                        throw new DukeyException("Event start or end time is missing for this task.");
-                    }
-                    newTask = new Event(parts[2], subparts[0], subparts[1]);
+                    newTask = new Event(parts[2], parts[3], parts[4]);
                 }
 
                 if (parts[1].equals("1")) {
@@ -117,6 +114,8 @@ public class Dukey {
                 }
                 tasks.add(newTask);
 
+            } catch (DateTimeParseException e) {
+                System.out.println(" OOPS!!! Saved date/time must use format: yyyy-MM-dd HHmm");
             } catch (Exception e) {
                 System.out.println(" OOPS!!! " + e.getMessage());
             }
@@ -283,6 +282,8 @@ public class Dukey {
 
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println(" OOPS!!! Please use deadline date/time format: yyyy-MM-dd HHmm");
                 }
 
             } else if (isCommand(userInput, Command.EVENT)) {
@@ -315,6 +316,8 @@ public class Dukey {
 
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println(" OOPS!!! Please use event date/time format: yyyy-MM-dd HHmm");
                 }
             } else if (isCommand(userInput, Command.DELETE)) {
                 try {
