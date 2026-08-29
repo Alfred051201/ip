@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -22,6 +23,13 @@ public class Event extends Task{
     public String toString() {
         return "[E]" + super.toString() + " (from: " + this.from.format(OUTPUT_FORMAT)
                 + " to: " + this.to.format(OUTPUT_FORMAT) + ")";
+    }
+
+    @Override
+    public boolean occursOn(LocalDate date) {
+        LocalDate startDate = this.from.toLocalDate();
+        LocalDate endDate = this.to.toLocalDate();
+        return !date.isBefore(startDate) && !date.isAfter(endDate);
     }
 
     @Override

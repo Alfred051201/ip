@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,23 @@ public class Dukey {
 
     private static void getTaskAmount(ArrayList<Task> tasks) {
         System.out.println(String.format("Now you have %d tasks in the list.", tasks.size()));
+    }
+
+    private static void listTasksOnDate(ArrayList<Task> tasks, LocalDate date) {
+        boolean hasMatchingTask = false;
+
+        System.out.println("Here are the deadlines and events on that date:");
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.occursOn(date)) {
+                System.out.println(String.format("%d.%s", i + 1, task));
+                hasMatchingTask = true;
+            }
+        }
+
+        if (!hasMatchingTask) {
+            System.out.println("There are no deadlines or events on that date.");
+        }
     }
 
     private static boolean isCommand(String userInput, Command command) {
@@ -194,6 +212,20 @@ public class Dukey {
                 conversation = false;
             } else if (isCommand(userInput, Command.LIST)) {
                 listAllTasks(tasks);
+            } else if (isCommand(userInput, Command.ON)) {
+                try {
+                    String dateText = userInput.substring(2).trim();
+                    if (dateText.isEmpty()) {
+                        throw new DukeyException("Please provide a date using format: yyyy-MM-dd");
+                    }
+
+                    LocalDate date = LocalDate.parse(dateText);
+                    listTasksOnDate(tasks, date);
+                } catch (DukeyException e) {
+                    System.out.println(" OOPS!!! " + e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println(" OOPS!!! Please use date format: yyyy-MM-dd");
+                }
             } else if (isCommand(userInput, Command.MARK)) {
                 try {
                     String taskNumberText = userInput.substring(4).trim();
