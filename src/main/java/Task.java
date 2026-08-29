@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 /**
  * Represents a task in the chatbot's task list.
  */
@@ -25,6 +27,10 @@ public class Task {
 
     public void markAsUndone() {
         this.isDone = false;
+    }
+
+    public boolean occursOn(LocalDate date) {
+        return false;
     }
 
     @Override

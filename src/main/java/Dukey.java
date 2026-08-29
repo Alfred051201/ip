@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -18,6 +20,23 @@ public class Dukey {
 
     private static void getTaskAmount(ArrayList<Task> tasks) {
         System.out.println(String.format("Now you have %d tasks in the list.", tasks.size()));
+    }
+
+    private static void listTasksOnDate(ArrayList<Task> tasks, LocalDate date) {
+        boolean hasMatchingTask = false;
+
+        System.out.println("Here are the deadlines and events on that date:");
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.occursOn(date)) {
+                System.out.println(String.format("%d.%s", i + 1, task));
+                hasMatchingTask = true;
+            }
+        }
+
+        if (!hasMatchingTask) {
+            System.out.println("There are no deadlines or events on that date.");
+        }
     }
 
     private static boolean isCommand(String userInput, Command command) {
@@ -102,14 +121,10 @@ public class Dukey {
                     }
                     newTask = new Deadline(parts[2], parts[3]);
                 } else {
-                    if (parts.length < 4 || parts[3].isEmpty()) {
+                    if (parts.length < 5 || parts[3].isEmpty() || parts[4].isEmpty()) {
                         throw new DukeyException("Event date/time is missing for this task.");
                     }
-                    String[] subparts = parts[3].split("-", 2);
-                    if (subparts.length < 2 || subparts[0].isEmpty() || subparts[1].isEmpty()) {
-                        throw new DukeyException("Event start or end time is missing for this task.");
-                    }
-                    newTask = new Event(parts[2], subparts[0], subparts[1]);
+                    newTask = new Event(parts[2], parts[3], parts[4]);
                 }
 
                 if (parts[1].equals("1")) {
@@ -117,6 +132,8 @@ public class Dukey {
                 }
                 tasks.add(newTask);
 
+            } catch (DateTimeParseException e) {
+                System.out.println(" OOPS!!! Saved date/time must use format: yyyy-MM-dd HHmm");
             } catch (Exception e) {
                 System.out.println(" OOPS!!! " + e.getMessage());
             }
@@ -195,6 +212,20 @@ public class Dukey {
                 conversation = false;
             } else if (isCommand(userInput, Command.LIST)) {
                 listAllTasks(tasks);
+            } else if (isCommand(userInput, Command.ON)) {
+                try {
+                    String dateText = userInput.substring(2).trim();
+                    if (dateText.isEmpty()) {
+                        throw new DukeyException("Please provide a date using format: yyyy-MM-dd");
+                    }
+
+                    LocalDate date = LocalDate.parse(dateText);
+                    listTasksOnDate(tasks, date);
+                } catch (DukeyException e) {
+                    System.out.println(" OOPS!!! " + e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println(" OOPS!!! Please use date format: yyyy-MM-dd");
+                }
             } else if (isCommand(userInput, Command.MARK)) {
                 try {
                     String taskNumberText = userInput.substring(4).trim();
@@ -283,6 +314,8 @@ public class Dukey {
 
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println(" OOPS!!! Please use deadline date/time format: yyyy-MM-dd HHmm");
                 }
 
             } else if (isCommand(userInput, Command.EVENT)) {
@@ -315,6 +348,8 @@ public class Dukey {
 
                 } catch (DukeyException e) {
                     System.out.println(" OOPS!!! " + e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println(" OOPS!!! Please use event date/time format: yyyy-MM-dd HHmm");
                 }
             } else if (isCommand(userInput, Command.DELETE)) {
                 try {
