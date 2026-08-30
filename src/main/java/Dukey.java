@@ -1,52 +1,9 @@
 import java.io.FileNotFoundException;
-import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Dukey {
-    private static boolean isCommand(String userInput, Command command) {
-        String commandWord = command.getWord();
-        return userInput.equals(commandWord) || userInput.startsWith(commandWord + " ");
-    }
-
-    private static String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
-        String[] result = new String[keywords.length + 1];
-
-        int currentStart = 0;
-
-        for (int i = 0; i < keywords.length; i++) {
-            String keyword = keywords[i];
-
-            int keywordIndex = input.indexOf(keyword, currentStart);
-
-            if (keywordIndex == -1) {
-                throw new DukeyException(errorMessage);
-            }
-
-            while (keywordIndex != -1
-                    && ((keywordIndex > 0 && input.charAt(keywordIndex - 1) != ' ')
-                    || (keywordIndex + keyword.length() < input.length()
-                    && input.charAt(keywordIndex + keyword.length()) != ' '))) {
-                keywordIndex = input.indexOf(keyword, keywordIndex + 1);
-            }
-
-            if (keywordIndex == -1) {
-                throw new DukeyException(errorMessage);
-            }
-
-            result[i] = input.substring(currentStart, keywordIndex).trim();
-            currentStart = keywordIndex + keyword.length();
-
-            while (currentStart < input.length() && input.charAt(currentStart) == ' ') {
-                currentStart++;
-            }
-        }
-
-        result[keywords.length] = input.substring(currentStart).trim();
-        return result;
-    }
-
     private static void saveTasks(Storage storage, ArrayList<Task> tasks, Ui ui) {
         try {
             storage.save(tasks);
@@ -57,6 +14,7 @@ public class Dukey {
 
     public static void main(String[] args) {
         Ui ui = new Ui();
+        Parser parser = new Parser();
         ui.showWelcome();
 
         boolean conversation = true;
@@ -74,37 +32,28 @@ public class Dukey {
 
         while (conversation && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
+            Command command = parser.parseCommand(userInput);
 
             ui.showLine();
 
-            if (isCommand(userInput, Command.BYE)) {
+            if (command == Command.BYE) {
                 ui.showBye();
                 saveTasks(storage, tasks, ui);
                 conversation = false;
-            } else if (isCommand(userInput, Command.LIST)) {
+            } else if (command == Command.LIST) {
                 ui.showList(tasks);
-            } else if (isCommand(userInput, Command.ON)) {
+            } else if (command == Command.ON) {
                 try {
-                    String dateText = userInput.substring(2).trim();
-                    if (dateText.isEmpty()) {
-                        throw new DukeyException("Please provide a date using format: yyyy-MM-dd");
-                    }
-
-                    LocalDate date = LocalDate.parse(dateText);
-                    ui.showTasksOnDate(tasks, date);
+                    ui.showTasksOnDate(tasks, parser.parseOnDate(userInput));
                 } catch (DukeyException e) {
                     ui.showError(e.getMessage());
                 } catch (DateTimeParseException e) {
                     ui.showError("Please use date format: yyyy-MM-dd");
                 }
-            } else if (isCommand(userInput, Command.MARK)) {
+            } else if (command == Command.MARK) {
                 try {
-                    String taskNumberText = userInput.substring(4).trim();
-                    if (taskNumberText.isEmpty()) {
-                        throw new DukeyException("Please provide a task number to mark.");
-                    }
-
-                    int taskNumber = Integer.parseInt(taskNumberText);
+                    int taskNumber = parser.parseTaskNumber(userInput, Command.MARK,
+                            "Please provide a task number to mark.");
                     if (taskNumber < 1 || taskNumber > tasks.size()) {
                         throw new DukeyException("Please provide a valid task number.");
                     }
@@ -118,14 +67,10 @@ public class Dukey {
                 } catch (DukeyException e) {
                     ui.showError(e.getMessage());
                 }
-            } else if (isCommand(userInput, Command.UNMARK)) {
+            } else if (command == Command.UNMARK) {
                 try {
-                    String taskNumberText = userInput.substring(6).trim();
-                    if (taskNumberText.isEmpty()) {
-                        throw new DukeyException("Please provide a task number to unmark.");
-                    }
-
-                    int taskNumber = Integer.parseInt(taskNumberText);
+                    int taskNumber = parser.parseTaskNumber(userInput, Command.UNMARK,
+                            "Please provide a task number to unmark.");
                     if (taskNumber < 1 || taskNumber > tasks.size()) {
                         throw new DukeyException("Please provide a valid task number.");
                     }
@@ -139,15 +84,9 @@ public class Dukey {
                 } catch (DukeyException e) {
                     ui.showError(e.getMessage());
                 }
-            } else if (isCommand(userInput, Command.TODO)) {
+            } else if (command == Command.TODO) {
                 try {
-                    String todoName = userInput.substring(4).trim();
-
-                    if (todoName.isEmpty()) {
-                        throw new DukeyException("The description of a todo cannot be empty.");
-                    }
-
-                    Task newTask = new Todo(todoName);
+                    Task newTask = new Todo(parser.parseTodoDescription(userInput));
                     tasks.add(newTask);
                     saveTasks(storage, tasks, ui);
                     ui.showTaskAdded(newTask, tasks);
@@ -156,22 +95,9 @@ public class Dukey {
                     ui.showError(e.getMessage());
                 }
 
-            } else if (isCommand(userInput, Command.DEADLINE)) {
+            } else if (command == Command.DEADLINE) {
                 try {
-                    String input = userInput.substring(8).trim();
-                    if (input.isEmpty()) {
-                        throw new DukeyException("Please provide a deadline task description.");
-                    }
-                    String[] parts = parseByKeywords(input, "Please use: deadline {DESCRIPTION} /by {WHEN}", "/by");
-
-                    if (parts[0].isEmpty()) {
-                        throw new DukeyException("Please provide a deadline task description.");
-                    }
-
-                    if (parts[1].isEmpty()) {
-                        throw new DukeyException("Please provide a deadline task date/time after /by.");
-                    }
-
+                    String[] parts = parser.parseDeadline(userInput);
                     Task newTask = new Deadline(parts[0], parts[1]);
                     tasks.add(newTask);
                     saveTasks(storage, tasks, ui);
@@ -183,27 +109,9 @@ public class Dukey {
                     ui.showError("Please use deadline date/time format: yyyy-MM-dd HHmm");
                 }
 
-            } else if (isCommand(userInput, Command.EVENT)) {
+            } else if (command == Command.EVENT) {
                 try {
-                    String input = userInput.substring(5).trim();
-                    if (input.isEmpty()) {
-                        throw new DukeyException("Please provide a event task description.");
-                    }
-                    String[] parts = parseByKeywords(input, "Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}",
-                            "/from", "/to");
-
-                    if (parts[0].isEmpty()) {
-                        throw new DukeyException("Please provide a event task description.");
-                    }
-
-                    if (parts[1].isEmpty()) {
-                        throw new DukeyException("Please provide a event task date/time after /from.");
-                    }
-
-                    if (parts[2].isEmpty()) {
-                        throw new DukeyException("Please provide a event task date/time after /to.");
-                    }
-
+                    String[] parts = parser.parseEvent(userInput);
                     Task newTask = new Event(parts[0], parts[1], parts[2]);
                     tasks.add(newTask);
                     saveTasks(storage, tasks, ui);
@@ -214,14 +122,10 @@ public class Dukey {
                 } catch (DateTimeParseException e) {
                     ui.showError("Please use event date/time format: yyyy-MM-dd HHmm");
                 }
-            } else if (isCommand(userInput, Command.DELETE)) {
+            } else if (command == Command.DELETE) {
                 try {
-                    String taskNumberText = userInput.substring(6).trim();
-                    if (taskNumberText.isEmpty()) {
-                        throw new DukeyException("Please provide a task number to delete.");
-                    }
-
-                    int taskNumber = Integer.parseInt(taskNumberText);
+                    int taskNumber = parser.parseTaskNumber(userInput, Command.DELETE,
+                            "Please provide a task number to delete.");
                     if (taskNumber < 1 || taskNumber > tasks.size()) {
                         throw new DukeyException("Please provide a valid task number.");
                     }

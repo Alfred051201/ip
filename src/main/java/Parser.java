@@ -1,0 +1,129 @@
+import java.time.LocalDate;
+
+/**
+ * Makes sense of user input by identifying commands and extracting command arguments.
+ */
+public class Parser {
+    public Command parseCommand(String userInput) {
+        for (Command command : Command.values()) {
+            if (isCommand(userInput, command)) {
+                return command;
+            }
+        }
+        return null;
+    }
+
+    public LocalDate parseOnDate(String userInput) throws DukeyException {
+        String dateText = getCommandArguments(userInput, Command.ON);
+        if (dateText.isEmpty()) {
+            throw new DukeyException("Please provide a date using format: yyyy-MM-dd");
+        }
+
+        return LocalDate.parse(dateText);
+    }
+
+    public int parseTaskNumber(String userInput, Command command, String emptyMessage) throws DukeyException {
+        String taskNumberText = getCommandArguments(userInput, command);
+        if (taskNumberText.isEmpty()) {
+            throw new DukeyException(emptyMessage);
+        }
+
+        return Integer.parseInt(taskNumberText);
+    }
+
+    public String parseTodoDescription(String userInput) throws DukeyException {
+        String description = getCommandArguments(userInput, Command.TODO);
+        if (description.isEmpty()) {
+            throw new DukeyException("The description of a todo cannot be empty.");
+        }
+
+        return description;
+    }
+
+    public String[] parseDeadline(String userInput) throws DukeyException {
+        String input = getCommandArguments(userInput, Command.DEADLINE);
+        if (input.isEmpty()) {
+            throw new DukeyException("Please provide a deadline task description.");
+        }
+
+        String[] parts = parseByKeywords(input, "Please use: deadline {DESCRIPTION} /by {WHEN}", "/by");
+        if (parts[0].isEmpty()) {
+            throw new DukeyException("Please provide a deadline task description.");
+        }
+
+        if (parts[1].isEmpty()) {
+            throw new DukeyException("Please provide a deadline task date/time after /by.");
+        }
+
+        return parts;
+    }
+
+    public String[] parseEvent(String userInput) throws DukeyException {
+        String input = getCommandArguments(userInput, Command.EVENT);
+        if (input.isEmpty()) {
+            throw new DukeyException("Please provide a event task description.");
+        }
+
+        String[] parts = parseByKeywords(input, "Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}",
+                "/from", "/to");
+        if (parts[0].isEmpty()) {
+            throw new DukeyException("Please provide a event task description.");
+        }
+
+        if (parts[1].isEmpty()) {
+            throw new DukeyException("Please provide a event task date/time after /from.");
+        }
+
+        if (parts[2].isEmpty()) {
+            throw new DukeyException("Please provide a event task date/time after /to.");
+        }
+
+        return parts;
+    }
+
+    private boolean isCommand(String userInput, Command command) {
+        String commandWord = command.getWord();
+        return userInput.equals(commandWord) || userInput.startsWith(commandWord + " ");
+    }
+
+    private String getCommandArguments(String userInput, Command command) {
+        return userInput.substring(command.getWord().length()).trim();
+    }
+
+    private String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
+        String[] result = new String[keywords.length + 1];
+
+        int currentStart = 0;
+
+        for (int i = 0; i < keywords.length; i++) {
+            String keyword = keywords[i];
+
+            int keywordIndex = input.indexOf(keyword, currentStart);
+
+            if (keywordIndex == -1) {
+                throw new DukeyException(errorMessage);
+            }
+
+            while (keywordIndex != -1
+                    && ((keywordIndex > 0 && input.charAt(keywordIndex - 1) != ' ')
+                    || (keywordIndex + keyword.length() < input.length()
+                    && input.charAt(keywordIndex + keyword.length()) != ' '))) {
+                keywordIndex = input.indexOf(keyword, keywordIndex + 1);
+            }
+
+            if (keywordIndex == -1) {
+                throw new DukeyException(errorMessage);
+            }
+
+            result[i] = input.substring(currentStart, keywordIndex).trim();
+            currentStart = keywordIndex + keyword.length();
+
+            while (currentStart < input.length() && input.charAt(currentStart) == ' ') {
+                currentStart++;
+            }
+        }
+
+        result[keywords.length] = input.substring(currentStart).trim();
+        return result;
+    }
+}
