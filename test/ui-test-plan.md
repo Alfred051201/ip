@@ -55,6 +55,44 @@ E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
 T | 1 | join sports club
 ```
 
+## Test Case: Shows error for invalid saved date time
+
+Aim: Verify that Storage reports malformed saved date-time data when loading tasks from disk.
+
+Initial data:
+```text
+T | 1 | read book
+D | 0 | return book | not-a-date
+```
+
+Input:
+```text
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ____        _              
+|  _ \ _   _| | _____ _   _ 
+| | | | | | | |/ / _ \ | | |
+| |_| | |_| |   <  __/ |_| |
+|____/ \__,_|_|\_\___|\__, |
+                       |___/ 
+
+Hello! I'm Dukey.
+What can I do for you?
+____________________________________________________________
+ OOPS!!! Saved date/time must use format: yyyy-MM-dd HHmm
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ## Test Case: Saves added todo automatically
 
 Aim: Verify that adding a todo updates the data file without needing another task-list command.
