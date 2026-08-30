@@ -1,10 +1,9 @@
 import java.io.FileNotFoundException;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Dukey {
-    private static void saveTasks(Storage storage, ArrayList<Task> tasks, Ui ui) {
+    private static void saveTasks(Storage storage, TaskList tasks, Ui ui) {
         try {
             storage.save(tasks);
         } catch (DukeyException e) {
@@ -19,7 +18,7 @@ public class Dukey {
 
         boolean conversation = true;
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        TaskList tasks = new TaskList();
 
         Storage storage = new Storage("src/main/data/dukey.txt");
         try {
@@ -54,11 +53,11 @@ public class Dukey {
                 try {
                     int taskNumber = parser.parseTaskNumber(userInput, Command.MARK,
                             "Please provide a task number to mark.");
-                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                    if (!tasks.isValidTaskNumber(taskNumber)) {
                         throw new DukeyException("Please provide a valid task number.");
                     }
 
-                    Task task = tasks.get(taskNumber - 1);
+                    Task task = tasks.get(taskNumber);
                     task.markAsDone();
                     saveTasks(storage, tasks, ui);
                     ui.showTaskMarked(task);
@@ -71,11 +70,11 @@ public class Dukey {
                 try {
                     int taskNumber = parser.parseTaskNumber(userInput, Command.UNMARK,
                             "Please provide a task number to unmark.");
-                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                    if (!tasks.isValidTaskNumber(taskNumber)) {
                         throw new DukeyException("Please provide a valid task number.");
                     }
 
-                    Task task = tasks.get(taskNumber - 1);
+                    Task task = tasks.get(taskNumber);
                     task.markAsUndone();
                     saveTasks(storage, tasks, ui);
                     ui.showTaskUnmarked(task);
@@ -126,12 +125,11 @@ public class Dukey {
                 try {
                     int taskNumber = parser.parseTaskNumber(userInput, Command.DELETE,
                             "Please provide a task number to delete.");
-                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                    if (!tasks.isValidTaskNumber(taskNumber)) {
                         throw new DukeyException("Please provide a valid task number.");
                     }
 
-                    Task task = tasks.get(taskNumber - 1);
-                    tasks.remove(taskNumber - 1);
+                    Task task = tasks.delete(taskNumber);
                     saveTasks(storage, tasks, ui);
                     ui.showTaskDeleted(task, tasks);
                 } catch (NumberFormatException e) {

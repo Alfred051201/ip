@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 /**
  * Handles all interactions with the user.
@@ -37,21 +36,21 @@ public class Ui {
         System.out.println(" OOPS!!! " + message);
     }
 
-    public void showList(ArrayList<Task> tasks) {
+    public void showList(TaskList tasks) {
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(String.format("%d.%s", i + 1, tasks.get(i)));
+        for (int i = 1; i <= tasks.size(); i++) {
+            System.out.println(String.format("%d.%s", i, tasks.get(i)));
         }
     }
 
-    public void showTasksOnDate(ArrayList<Task> tasks, LocalDate date) {
+    public void showTasksOnDate(TaskList tasks, LocalDate date) {
         boolean hasMatchingTask = false;
 
         System.out.println("Here are the deadlines and events on that date:");
-        for (int i = 0; i < tasks.size(); i++) {
+        for (int i = 1; i <= tasks.size(); i++) {
             Task task = tasks.get(i);
             if (task.occursOn(date)) {
-                System.out.println(String.format("%d.%s", i + 1, task));
+                System.out.println(String.format("%d.%s", i, task));
                 hasMatchingTask = true;
             }
         }
@@ -61,11 +60,11 @@ public class Ui {
         }
     }
 
-    public void showTaskCount(ArrayList<Task> tasks) {
+    public void showTaskCount(TaskList tasks) {
         System.out.println(String.format("Now you have %d tasks in the list.", tasks.size()));
     }
 
-    public void showTaskAdded(Task task, ArrayList<Task> tasks) {
+    public void showTaskAdded(Task task, TaskList tasks) {
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
         showTaskCount(tasks);
@@ -81,7 +80,7 @@ public class Ui {
         System.out.println("  " + task);
     }
 
-    public void showTaskDeleted(Task task, ArrayList<Task> tasks) {
+    public void showTaskDeleted(Task task, TaskList tasks) {
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + task);
         showTaskCount(tasks);

@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -17,8 +16,8 @@ public class Storage {
         this.filePath = filePath;
     }
 
-    public ArrayList<Task> load() throws FileNotFoundException, DukeyException {
-        ArrayList<Task> tasks = new ArrayList<>();
+    public TaskList load() throws FileNotFoundException, DukeyException {
+        TaskList tasks = new TaskList();
         File file = new File(this.filePath);
 
         try (Scanner scanner = new Scanner(file)) {
@@ -30,7 +29,7 @@ public class Storage {
         return tasks;
     }
 
-    public void save(ArrayList<Task> tasks) throws DukeyException {
+    public void save(TaskList tasks) throws DukeyException {
         File file = new File(this.filePath);
         File parentDirectory = file.getParentFile();
 
@@ -43,7 +42,8 @@ public class Storage {
         }
 
         try (FileWriter fw = new FileWriter(file)) {
-            for (Task task : tasks) {
+            for (int i = 1; i <= tasks.size(); i++) {
+                Task task = tasks.get(i);
                 String fileLine = task.toFileString();
 
                 if (fileLine.isEmpty()) {
