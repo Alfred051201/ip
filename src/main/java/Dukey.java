@@ -103,10 +103,8 @@ public class Dukey {
                 }
             } else if (command == CommandWord.TODO) {
                 try {
-                    Task newTask = new Todo(this.parser.parseTodoDescription(userInput));
-                    this.tasks.add(newTask);
-                    saveTasks();
-                    this.ui.showTaskAdded(newTask, this.tasks);
+                    Command todoCommand = this.parser.parse(userInput);
+                    todoCommand.execute(this.tasks, this.ui, this.storage);
 
                 } catch (DukeyException e) {
                     this.ui.showError(e.getMessage());

@@ -12,6 +12,8 @@ public class Parser {
             return new ListCommand();
         } else if (commandWord == CommandWord.ON) {
             return new OnCommand(parseOnDate(userInput));
+        } else if (commandWord == CommandWord.TODO) {
+            return new TodoCommand(parseTodoDescription(userInput));
         }
 
         throw new DukeyException("I'm sorry, but I don't know what that means :-(");
