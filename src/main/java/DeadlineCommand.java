@@ -2,9 +2,11 @@
  * Adds a deadline task to the task list.
  */
 import dukey.exception.DukeyException;
+import dukey.storage.Storage;
 import dukey.task.Deadline;
 import dukey.task.Task;
 import dukey.task.TaskList;
+import dukey.ui.Ui;
 
 public class DeadlineCommand extends Command {
     private final String description;

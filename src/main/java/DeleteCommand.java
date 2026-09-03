@@ -1,6 +1,8 @@
 import dukey.exception.DukeyException;
+import dukey.storage.Storage;
 import dukey.task.Task;
 import dukey.task.TaskList;
+import dukey.ui.Ui;
 
 /**
  * Deletes a task from the task list.

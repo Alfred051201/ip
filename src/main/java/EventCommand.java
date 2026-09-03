@@ -2,9 +2,11 @@
  * Adds an event task to the task list.
  */
 import dukey.exception.DukeyException;
+import dukey.storage.Storage;
 import dukey.task.Event;
 import dukey.task.Task;
 import dukey.task.TaskList;
+import dukey.ui.Ui;
 
 public class EventCommand extends Command {
     private final String description;

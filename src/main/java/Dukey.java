@@ -2,7 +2,9 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import dukey.exception.DukeyException;
+import dukey.storage.Storage;
 import dukey.task.TaskList;
+import dukey.ui.Ui;
 
 public class Dukey {
     private Storage storage;
