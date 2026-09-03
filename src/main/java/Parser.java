@@ -20,6 +20,9 @@ public class Parser {
         } else if (commandWord == CommandWord.EVENT) {
             String[] parts = parseEvent(userInput);
             return new EventCommand(parts[0], parts[1], parts[2]);
+        } else if (commandWord == CommandWord.MARK) {
+            return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
+                    "Please provide a task number to mark."));
         }
 
         throw new DukeyException("I'm sorry, but I don't know what that means :-(");
