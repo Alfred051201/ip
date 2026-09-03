@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 import dukey.command.Command;
 import dukey.exception.DukeyException;
+import dukey.parser.Parser;
 import dukey.storage.Storage;
 import dukey.task.TaskList;
 import dukey.ui.Ui;
