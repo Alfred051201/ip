@@ -1,24 +1,10 @@
 /**
- * Represents the supported user commands.
+ * Represents an executable user command.
  */
-public enum Command {
-    BYE("bye"),
-    LIST("list"),
-    MARK("mark"),
-    UNMARK("unmark"),
-    TODO("todo"),
-    DEADLINE("deadline"),
-    EVENT("event"),
-    DELETE("delete"),
-    ON("on");
+public abstract class Command {
+    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws DukeyException;
 
-    private final String word;
-
-    Command(String word) {
-        this.word = word;
-    }
-
-    public String getWord() {
-        return word;
+    public boolean isExit() {
+        return false;
     }
 }
