@@ -25,14 +25,6 @@ public class Dukey {
         }
     }
 
-    private void saveTasks() {
-        try {
-            this.storage.save(this.tasks);
-        } catch (DukeyException e) {
-            this.ui.showError(e.getMessage());
-        }
-    }
-
     public void run() {
         boolean conversation = true;
         Scanner scanner = new Scanner(System.in);
@@ -117,15 +109,8 @@ public class Dukey {
                 }
             } else if (command == CommandWord.DELETE) {
                 try {
-                    int taskNumber = this.parser.parseTaskNumber(userInput, CommandWord.DELETE,
-                            "Please provide a task number to delete.");
-                    if (!this.tasks.isValidTaskNumber(taskNumber)) {
-                        throw new DukeyException("Please provide a valid task number.");
-                    }
-
-                    Task task = this.tasks.delete(taskNumber);
-                    saveTasks();
-                    this.ui.showTaskDeleted(task, this.tasks);
+                    Command deleteCommand = this.parser.parse(userInput);
+                    deleteCommand.execute(this.tasks, this.ui, this.storage);
                 } catch (NumberFormatException e) {
                     this.ui.showError("Please provide a valid task number.");
                 } catch (DukeyException e) {
