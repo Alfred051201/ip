@@ -17,6 +17,9 @@ public class Parser {
         } else if (commandWord == CommandWord.DEADLINE) {
             String[] parts = parseDeadline(userInput);
             return new DeadlineCommand(parts[0], parts[1]);
+        } else if (commandWord == CommandWord.EVENT) {
+            String[] parts = parseEvent(userInput);
+            return new EventCommand(parts[0], parts[1], parts[2]);
         }
 
         throw new DukeyException("I'm sorry, but I don't know what that means :-(");

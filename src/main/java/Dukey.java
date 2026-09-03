@@ -123,11 +123,8 @@ public class Dukey {
 
             } else if (command == CommandWord.EVENT) {
                 try {
-                    String[] parts = this.parser.parseEvent(userInput);
-                    Task newTask = new Event(parts[0], parts[1], parts[2]);
-                    this.tasks.add(newTask);
-                    saveTasks();
-                    this.ui.showTaskAdded(newTask, this.tasks);
+                    Command eventCommand = this.parser.parse(userInput);
+                    eventCommand.execute(this.tasks, this.ui, this.storage);
 
                 } catch (DukeyException e) {
                     this.ui.showError(e.getMessage());
