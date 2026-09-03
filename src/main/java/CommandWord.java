@@ -1,7 +1,7 @@
 /**
  * Represents the supported user commands.
  */
-public enum Command {
+public enum CommandWord {
     BYE("bye"),
     LIST("list"),
     MARK("mark"),
@@ -14,7 +14,7 @@ public enum Command {
 
     private final String word;
 
-    Command(String word) {
+    CommandWord(String word) {
         this.word = word;
     }
 

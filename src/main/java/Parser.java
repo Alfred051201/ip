@@ -4,8 +4,8 @@ import java.time.LocalDate;
  * Makes sense of user input by identifying commands and extracting command arguments.
  */
 public class Parser {
-    public Command parseCommand(String userInput) {
-        for (Command command : Command.values()) {
+    public CommandWord parseCommand(String userInput) {
+        for (CommandWord command : CommandWord.values()) {
             if (isCommand(userInput, command)) {
                 return command;
             }
@@ -14,7 +14,7 @@ public class Parser {
     }
 
     public LocalDate parseOnDate(String userInput) throws DukeyException {
-        String dateText = getCommandArguments(userInput, Command.ON);
+        String dateText = getCommandArguments(userInput, CommandWord.ON);
         if (dateText.isEmpty()) {
             throw new DukeyException("Please provide a date using format: yyyy-MM-dd");
         }
@@ -22,7 +22,7 @@ public class Parser {
         return LocalDate.parse(dateText);
     }
 
-    public int parseTaskNumber(String userInput, Command command, String emptyMessage) throws DukeyException {
+    public int parseTaskNumber(String userInput, CommandWord command, String emptyMessage) throws DukeyException {
         String taskNumberText = getCommandArguments(userInput, command);
         if (taskNumberText.isEmpty()) {
             throw new DukeyException(emptyMessage);
@@ -32,7 +32,7 @@ public class Parser {
     }
 
     public String parseTodoDescription(String userInput) throws DukeyException {
-        String description = getCommandArguments(userInput, Command.TODO);
+        String description = getCommandArguments(userInput, CommandWord.TODO);
         if (description.isEmpty()) {
             throw new DukeyException("The description of a todo cannot be empty.");
         }
@@ -41,7 +41,7 @@ public class Parser {
     }
 
     public String[] parseDeadline(String userInput) throws DukeyException {
-        String input = getCommandArguments(userInput, Command.DEADLINE);
+        String input = getCommandArguments(userInput, CommandWord.DEADLINE);
         if (input.isEmpty()) {
             throw new DukeyException("Please provide a deadline task description.");
         }
@@ -59,7 +59,7 @@ public class Parser {
     }
 
     public String[] parseEvent(String userInput) throws DukeyException {
-        String input = getCommandArguments(userInput, Command.EVENT);
+        String input = getCommandArguments(userInput, CommandWord.EVENT);
         if (input.isEmpty()) {
             throw new DukeyException("Please provide a event task description.");
         }
@@ -81,12 +81,12 @@ public class Parser {
         return parts;
     }
 
-    private boolean isCommand(String userInput, Command command) {
+    private boolean isCommand(String userInput, CommandWord command) {
         String commandWord = command.getWord();
         return userInput.equals(commandWord) || userInput.startsWith(commandWord + " ");
     }
 
-    private String getCommandArguments(String userInput, Command command) {
+    private String getCommandArguments(String userInput, CommandWord command) {
         return userInput.substring(command.getWord().length()).trim();
     }
 

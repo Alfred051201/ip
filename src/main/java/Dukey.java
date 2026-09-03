@@ -39,17 +39,17 @@ public class Dukey {
 
         while (conversation && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
-            Command command = this.parser.parseCommand(userInput);
+            CommandWord command = this.parser.parseCommand(userInput);
 
             this.ui.showLine();
 
-            if (command == Command.BYE) {
+            if (command == CommandWord.BYE) {
                 this.ui.showBye();
                 saveTasks();
                 conversation = false;
-            } else if (command == Command.LIST) {
+            } else if (command == CommandWord.LIST) {
                 this.ui.showList(this.tasks);
-            } else if (command == Command.ON) {
+            } else if (command == CommandWord.ON) {
                 try {
                     this.ui.showTasksOnDate(this.tasks, this.parser.parseOnDate(userInput));
                 } catch (DukeyException e) {
@@ -57,9 +57,9 @@ public class Dukey {
                 } catch (DateTimeParseException e) {
                     this.ui.showError("Please use date format: yyyy-MM-dd");
                 }
-            } else if (command == Command.MARK) {
+            } else if (command == CommandWord.MARK) {
                 try {
-                    int taskNumber = this.parser.parseTaskNumber(userInput, Command.MARK,
+                    int taskNumber = this.parser.parseTaskNumber(userInput, CommandWord.MARK,
                             "Please provide a task number to mark.");
                     if (!this.tasks.isValidTaskNumber(taskNumber)) {
                         throw new DukeyException("Please provide a valid task number.");
@@ -74,9 +74,9 @@ public class Dukey {
                 } catch (DukeyException e) {
                     this.ui.showError(e.getMessage());
                 }
-            } else if (command == Command.UNMARK) {
+            } else if (command == CommandWord.UNMARK) {
                 try {
-                    int taskNumber = this.parser.parseTaskNumber(userInput, Command.UNMARK,
+                    int taskNumber = this.parser.parseTaskNumber(userInput, CommandWord.UNMARK,
                             "Please provide a task number to unmark.");
                     if (!this.tasks.isValidTaskNumber(taskNumber)) {
                         throw new DukeyException("Please provide a valid task number.");
@@ -91,7 +91,7 @@ public class Dukey {
                 } catch (DukeyException e) {
                     this.ui.showError(e.getMessage());
                 }
-            } else if (command == Command.TODO) {
+            } else if (command == CommandWord.TODO) {
                 try {
                     Task newTask = new Todo(this.parser.parseTodoDescription(userInput));
                     this.tasks.add(newTask);
@@ -102,7 +102,7 @@ public class Dukey {
                     this.ui.showError(e.getMessage());
                 }
 
-            } else if (command == Command.DEADLINE) {
+            } else if (command == CommandWord.DEADLINE) {
                 try {
                     String[] parts = this.parser.parseDeadline(userInput);
                     Task newTask = new Deadline(parts[0], parts[1]);
@@ -116,7 +116,7 @@ public class Dukey {
                     this.ui.showError("Please use deadline date/time format: yyyy-MM-dd HHmm");
                 }
 
-            } else if (command == Command.EVENT) {
+            } else if (command == CommandWord.EVENT) {
                 try {
                     String[] parts = this.parser.parseEvent(userInput);
                     Task newTask = new Event(parts[0], parts[1], parts[2]);
@@ -129,9 +129,9 @@ public class Dukey {
                 } catch (DateTimeParseException e) {
                     this.ui.showError("Please use event date/time format: yyyy-MM-dd HHmm");
                 }
-            } else if (command == Command.DELETE) {
+            } else if (command == CommandWord.DELETE) {
                 try {
-                    int taskNumber = this.parser.parseTaskNumber(userInput, Command.DELETE,
+                    int taskNumber = this.parser.parseTaskNumber(userInput, CommandWord.DELETE,
                             "Please provide a task number to delete.");
                     if (!this.tasks.isValidTaskNumber(taskNumber)) {
                         throw new DukeyException("Please provide a valid task number.");
