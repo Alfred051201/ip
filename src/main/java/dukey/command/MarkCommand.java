@@ -1,10 +1,18 @@
+package dukey.command;
+
+import dukey.exception.DukeyException;
+import dukey.storage.Storage;
+import dukey.task.Task;
+import dukey.task.TaskList;
+import dukey.ui.Ui;
+
 /**
- * Marks a task as not done.
+ * Marks a task as done.
  */
-public class UnmarkCommand extends Command {
+public class MarkCommand extends Command {
     private final int taskNumber;
 
-    public UnmarkCommand(int taskNumber) {
+    public MarkCommand(int taskNumber) {
         this.taskNumber = taskNumber;
     }
 
@@ -15,8 +23,8 @@ public class UnmarkCommand extends Command {
         }
 
         Task task = tasks.get(this.taskNumber);
-        task.markAsUndone();
+        task.markAsDone();
         storage.save(tasks);
-        ui.showTaskUnmarked(task);
+        ui.showTaskMarked(task);
     }
 }
