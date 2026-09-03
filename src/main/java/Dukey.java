@@ -1,5 +1,4 @@
 import java.io.FileNotFoundException;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class Dukey {
@@ -31,93 +30,15 @@ public class Dukey {
 
         while (conversation && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
-            CommandWord command = this.parser.parseCommand(userInput);
 
             this.ui.showLine();
 
-            if (command == CommandWord.BYE) {
-                try {
-                    Command exitCommand = this.parser.parse(userInput);
-                    exitCommand.execute(this.tasks, this.ui, this.storage);
-                    conversation = !exitCommand.isExit();
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                }
-            } else if (command == CommandWord.LIST) {
-                try {
-                    Command listCommand = this.parser.parse(userInput);
-                    listCommand.execute(this.tasks, this.ui, this.storage);
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                }
-            } else if (command == CommandWord.ON) {
-                try {
-                    Command onCommand = this.parser.parse(userInput);
-                    onCommand.execute(this.tasks, this.ui, this.storage);
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                } catch (DateTimeParseException e) {
-                    this.ui.showError("Please use date format: yyyy-MM-dd");
-                }
-            } else if (command == CommandWord.MARK) {
-                try {
-                    Command markCommand = this.parser.parse(userInput);
-                    markCommand.execute(this.tasks, this.ui, this.storage);
-                } catch (NumberFormatException e) {
-                    this.ui.showError("Please provide a valid task number.");
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                }
-            } else if (command == CommandWord.UNMARK) {
-                try {
-                    Command unmarkCommand = this.parser.parse(userInput);
-                    unmarkCommand.execute(this.tasks, this.ui, this.storage);
-                } catch (NumberFormatException e) {
-                    this.ui.showError("Please provide a valid task number.");
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                }
-            } else if (command == CommandWord.TODO) {
-                try {
-                    Command todoCommand = this.parser.parse(userInput);
-                    todoCommand.execute(this.tasks, this.ui, this.storage);
-
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                }
-
-            } else if (command == CommandWord.DEADLINE) {
-                try {
-                    Command deadlineCommand = this.parser.parse(userInput);
-                    deadlineCommand.execute(this.tasks, this.ui, this.storage);
-
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                } catch (DateTimeParseException e) {
-                    this.ui.showError("Please use deadline date/time format: yyyy-MM-dd HHmm");
-                }
-
-            } else if (command == CommandWord.EVENT) {
-                try {
-                    Command eventCommand = this.parser.parse(userInput);
-                    eventCommand.execute(this.tasks, this.ui, this.storage);
-
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                } catch (DateTimeParseException e) {
-                    this.ui.showError("Please use event date/time format: yyyy-MM-dd HHmm");
-                }
-            } else if (command == CommandWord.DELETE) {
-                try {
-                    Command deleteCommand = this.parser.parse(userInput);
-                    deleteCommand.execute(this.tasks, this.ui, this.storage);
-                } catch (NumberFormatException e) {
-                    this.ui.showError("Please provide a valid task number.");
-                } catch (DukeyException e) {
-                    this.ui.showError(e.getMessage());
-                }
-            } else {
-                this.ui.showError("I'm sorry, but I don't know what that means :-(");
+            try {
+                Command command = this.parser.parse(userInput);
+                command.execute(this.tasks, this.ui, this.storage);
+                conversation = !command.isExit();
+            } catch (DukeyException e) {
+                this.ui.showError(e.getMessage());
             }
 
             this.ui.showLine();

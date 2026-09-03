@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 /**
  * Makes sense of user input by identifying commands and extracting command arguments.
@@ -6,29 +7,36 @@ import java.time.LocalDate;
 public class Parser {
     public Command parse(String userInput) throws DukeyException {
         CommandWord commandWord = parseCommand(userInput);
-        if (commandWord == CommandWord.BYE) {
-            return new ExitCommand();
-        } else if (commandWord == CommandWord.LIST) {
-            return new ListCommand();
-        } else if (commandWord == CommandWord.ON) {
-            return new OnCommand(parseOnDate(userInput));
-        } else if (commandWord == CommandWord.TODO) {
-            return new TodoCommand(parseTodoDescription(userInput));
-        } else if (commandWord == CommandWord.DEADLINE) {
-            String[] parts = parseDeadline(userInput);
-            return new DeadlineCommand(parts[0], parts[1]);
-        } else if (commandWord == CommandWord.EVENT) {
-            String[] parts = parseEvent(userInput);
-            return new EventCommand(parts[0], parts[1], parts[2]);
-        } else if (commandWord == CommandWord.MARK) {
-            return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
-                    "Please provide a task number to mark."));
-        } else if (commandWord == CommandWord.UNMARK) {
-            return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
-                    "Please provide a task number to unmark."));
-        } else if (commandWord == CommandWord.DELETE) {
-            return new DeleteCommand(parseTaskNumber(userInput, CommandWord.DELETE,
-                    "Please provide a task number to delete."));
+
+        try {
+            if (commandWord == CommandWord.BYE) {
+                return new ExitCommand();
+            } else if (commandWord == CommandWord.LIST) {
+                return new ListCommand();
+            } else if (commandWord == CommandWord.ON) {
+                return new OnCommand(parseOnDate(userInput));
+            } else if (commandWord == CommandWord.TODO) {
+                return new TodoCommand(parseTodoDescription(userInput));
+            } else if (commandWord == CommandWord.DEADLINE) {
+                String[] parts = parseDeadline(userInput);
+                return new DeadlineCommand(parts[0], parts[1]);
+            } else if (commandWord == CommandWord.EVENT) {
+                String[] parts = parseEvent(userInput);
+                return new EventCommand(parts[0], parts[1], parts[2]);
+            } else if (commandWord == CommandWord.MARK) {
+                return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
+                        "Please provide a task number to mark."));
+            } else if (commandWord == CommandWord.UNMARK) {
+                return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
+                        "Please provide a task number to unmark."));
+            } else if (commandWord == CommandWord.DELETE) {
+                return new DeleteCommand(parseTaskNumber(userInput, CommandWord.DELETE,
+                        "Please provide a task number to delete."));
+            }
+        } catch (NumberFormatException e) {
+            throw new DukeyException("Please provide a valid task number.");
+        } catch (DateTimeParseException e) {
+            throw new DukeyException(getDateFormatMessage(commandWord));
         }
 
         throw new DukeyException("I'm sorry, but I don't know what that means :-(");
@@ -118,6 +126,18 @@ public class Parser {
 
     private String getCommandArguments(String userInput, CommandWord command) {
         return userInput.substring(command.getWord().length()).trim();
+    }
+
+    private String getDateFormatMessage(CommandWord commandWord) {
+        if (commandWord == CommandWord.ON) {
+            return "Please use date format: yyyy-MM-dd";
+        } else if (commandWord == CommandWord.DEADLINE) {
+            return "Please use deadline date/time format: yyyy-MM-dd HHmm";
+        } else if (commandWord == CommandWord.EVENT) {
+            return "Please use event date/time format: yyyy-MM-dd HHmm";
+        }
+
+        return "Please use a valid date/time format.";
     }
 
     private String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
