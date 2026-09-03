@@ -1,3 +1,5 @@
+package dukey.command;
+
 import dukey.exception.DukeyException;
 import dukey.storage.Storage;
 import dukey.task.Task;
@@ -5,12 +7,12 @@ import dukey.task.TaskList;
 import dukey.ui.Ui;
 
 /**
- * Deletes a task from the task list.
+ * Marks a task as not done.
  */
-public class DeleteCommand extends Command {
+public class UnmarkCommand extends Command {
     private final int taskNumber;
 
-    public DeleteCommand(int taskNumber) {
+    public UnmarkCommand(int taskNumber) {
         this.taskNumber = taskNumber;
     }
 
@@ -20,8 +22,9 @@ public class DeleteCommand extends Command {
             throw new DukeyException("Please provide a valid task number.");
         }
 
-        Task task = tasks.delete(this.taskNumber);
+        Task task = tasks.get(this.taskNumber);
+        task.markAsUndone();
         storage.save(tasks);
-        ui.showTaskDeleted(task, tasks);
+        ui.showTaskUnmarked(task);
     }
 }

@@ -1,3 +1,5 @@
+package dukey.command;
+
 /**
  * Represents the supported user commands.
  */

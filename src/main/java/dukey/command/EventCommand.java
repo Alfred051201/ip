@@ -1,6 +1,8 @@
 /**
  * Adds an event task to the task list.
  */
+package dukey.command;
+
 import dukey.exception.DukeyException;
 import dukey.storage.Storage;
 import dukey.task.Event;

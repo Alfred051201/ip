@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import dukey.command.Command;
 import dukey.exception.DukeyException;
 import dukey.storage.Storage;
 import dukey.task.TaskList;

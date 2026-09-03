@@ -1,3 +1,5 @@
+package dukey.command;
+
 import dukey.exception.DukeyException;
 import dukey.storage.Storage;
 import dukey.task.TaskList;
