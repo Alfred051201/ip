@@ -60,7 +60,8 @@ public class Dukey {
                 }
             } else if (command == CommandWord.ON) {
                 try {
-                    this.ui.showTasksOnDate(this.tasks, this.parser.parseOnDate(userInput));
+                    Command onCommand = this.parser.parse(userInput);
+                    onCommand.execute(this.tasks, this.ui, this.storage);
                 } catch (DukeyException e) {
                     this.ui.showError(e.getMessage());
                 } catch (DateTimeParseException e) {

@@ -10,6 +10,8 @@ public class Parser {
             return new ExitCommand();
         } else if (commandWord == CommandWord.LIST) {
             return new ListCommand();
+        } else if (commandWord == CommandWord.ON) {
+            return new OnCommand(parseOnDate(userInput));
         }
 
         throw new DukeyException("I'm sorry, but I don't know what that means :-(");
