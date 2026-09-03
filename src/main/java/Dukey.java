@@ -44,9 +44,13 @@ public class Dukey {
             this.ui.showLine();
 
             if (command == CommandWord.BYE) {
-                this.ui.showBye();
-                saveTasks();
-                conversation = false;
+                try {
+                    Command exitCommand = this.parser.parse(userInput);
+                    exitCommand.execute(this.tasks, this.ui, this.storage);
+                    conversation = !exitCommand.isExit();
+                } catch (DukeyException e) {
+                    this.ui.showError(e.getMessage());
+                }
             } else if (command == CommandWord.LIST) {
                 this.ui.showList(this.tasks);
             } else if (command == CommandWord.ON) {

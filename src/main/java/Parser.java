@@ -4,6 +4,15 @@ import java.time.LocalDate;
  * Makes sense of user input by identifying commands and extracting command arguments.
  */
 public class Parser {
+    public Command parse(String userInput) throws DukeyException {
+        CommandWord commandWord = parseCommand(userInput);
+        if (commandWord == CommandWord.BYE) {
+            return new ExitCommand();
+        }
+
+        throw new DukeyException("I'm sorry, but I don't know what that means :-(");
+    }
+
     public CommandWord parseCommand(String userInput) {
         for (CommandWord command : CommandWord.values()) {
             if (isCommand(userInput, command)) {
