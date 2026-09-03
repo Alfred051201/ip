@@ -8,12 +8,20 @@ import dukey.storage.Storage;
 import dukey.task.TaskList;
 import dukey.ui.Ui;
 
+/**
+ * Runs the Dukey chatbot application.
+ */
 public class Dukey {
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
     private Parser parser;
 
+    /**
+     * Creates a Dukey chatbot that loads and saves tasks at the given file path.
+     *
+     * @param filePath Path to the task data file.
+     */
     public Dukey(String filePath) {
         this.ui = new Ui();
         this.parser = new Parser();
@@ -31,6 +39,9 @@ public class Dukey {
         }
     }
 
+    /**
+     * Starts the command loop and processes user commands until the user exits.
+     */
     public void run() {
         boolean conversation = true;
         Scanner scanner = new Scanner(System.in);
@@ -52,6 +63,11 @@ public class Dukey {
         }
     }
 
+    /**
+     * Starts the chatbot application.
+     *
+     * @param args Command line arguments supplied by the runtime.
+     */
     public static void main(String[] args) {
         new Dukey("src/main/data/dukey.txt").run();
     }

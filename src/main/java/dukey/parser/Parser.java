@@ -20,6 +20,13 @@ import dukey.exception.DukeyException;
  * Makes sense of user input by identifying commands and extracting command arguments.
  */
 public class Parser {
+    /**
+     * Parses raw user input into an executable command.
+     *
+     * @param userInput Full command entered by the user.
+     * @return Command object representing the user input.
+     * @throws DukeyException If the command is unknown or its arguments are invalid.
+     */
     public Command parse(String userInput) throws DukeyException {
         CommandWord commandWord = parseCommand(userInput);
 
@@ -57,6 +64,12 @@ public class Parser {
         throw new DukeyException("I'm sorry, but I don't know what that means :-(");
     }
 
+    /**
+     * Parses the command word from raw user input.
+     *
+     * @param userInput Full command entered by the user.
+     * @return Matching command word, or null if the command is unknown.
+     */
     public CommandWord parseCommand(String userInput) {
         for (CommandWord command : CommandWord.values()) {
             if (isCommand(userInput, command)) {
@@ -66,6 +79,13 @@ public class Parser {
         return null;
     }
 
+    /**
+     * Parses the date argument of an on command.
+     *
+     * @param userInput Full on command entered by the user.
+     * @return Date to search for.
+     * @throws DukeyException If the date argument is missing.
+     */
     public LocalDate parseOnDate(String userInput) throws DukeyException {
         String dateText = getCommandArguments(userInput, CommandWord.ON);
         if (dateText.isEmpty()) {
@@ -75,6 +95,15 @@ public class Parser {
         return LocalDate.parse(dateText);
     }
 
+    /**
+     * Parses a one-based task number from a command.
+     *
+     * @param userInput Full command entered by the user.
+     * @param command Command word whose arguments should be parsed.
+     * @param emptyMessage Error message to use if the task number is missing.
+     * @return One-based task number.
+     * @throws DukeyException If the task number is missing.
+     */
     public int parseTaskNumber(String userInput, CommandWord command, String emptyMessage) throws DukeyException {
         String taskNumberText = getCommandArguments(userInput, command);
         if (taskNumberText.isEmpty()) {
@@ -84,6 +113,13 @@ public class Parser {
         return Integer.parseInt(taskNumberText);
     }
 
+    /**
+     * Parses the description from a todo command.
+     *
+     * @param userInput Full todo command entered by the user.
+     * @return Todo description.
+     * @throws DukeyException If the description is empty.
+     */
     public String parseTodoDescription(String userInput) throws DukeyException {
         String description = getCommandArguments(userInput, CommandWord.TODO);
         if (description.isEmpty()) {
@@ -93,6 +129,13 @@ public class Parser {
         return description;
     }
 
+    /**
+     * Parses the description and date/time from a deadline command.
+     *
+     * @param userInput Full deadline command entered by the user.
+     * @return Array containing the description followed by the by date/time.
+     * @throws DukeyException If the description, keyword, or date/time is missing.
+     */
     public String[] parseDeadline(String userInput) throws DukeyException {
         String input = getCommandArguments(userInput, CommandWord.DEADLINE);
         if (input.isEmpty()) {
@@ -111,6 +154,13 @@ public class Parser {
         return parts;
     }
 
+    /**
+     * Parses the description, start date/time, and end date/time from an event command.
+     *
+     * @param userInput Full event command entered by the user.
+     * @return Array containing the description, from date/time, and to date/time.
+     * @throws DukeyException If the description, keywords, or date/time values are missing.
+     */
     public String[] parseEvent(String userInput) throws DukeyException {
         String input = getCommandArguments(userInput, CommandWord.EVENT);
         if (input.isEmpty()) {
