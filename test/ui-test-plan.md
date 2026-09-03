@@ -1,7 +1,7 @@
 # UI Test Plan
 
 Program command: `java -cp src/main/java Dukey`
-Compile command: `javac src/main/java/*.java`
+Compile command: `javac -cp src/main/java $(find src/main/java -name '*.java')`
 Data file: `src/main/data/dukey.txt`
 
 ## Test Case: Loads tasks with date times from disk

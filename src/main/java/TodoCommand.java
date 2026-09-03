@@ -1,6 +1,11 @@
 /**
  * Adds a todo task to the task list.
  */
+import dukey.exception.DukeyException;
+import dukey.task.Task;
+import dukey.task.TaskList;
+import dukey.task.Todo;
+
 public class TodoCommand extends Command {
     private final String description;
 

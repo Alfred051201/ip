@@ -1,5 +1,8 @@
 import java.time.LocalDate;
 
+import dukey.task.Task;
+import dukey.task.TaskList;
+
 /**
  * Handles all interactions with the user.
  */
