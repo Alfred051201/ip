@@ -52,7 +52,12 @@ public class Dukey {
                     this.ui.showError(e.getMessage());
                 }
             } else if (command == CommandWord.LIST) {
-                this.ui.showList(this.tasks);
+                try {
+                    Command listCommand = this.parser.parse(userInput);
+                    listCommand.execute(this.tasks, this.ui, this.storage);
+                } catch (DukeyException e) {
+                    this.ui.showError(e.getMessage());
+                }
             } else if (command == CommandWord.ON) {
                 try {
                     this.ui.showTasksOnDate(this.tasks, this.parser.parseOnDate(userInput));
