@@ -14,6 +14,9 @@ public class Parser {
             return new OnCommand(parseOnDate(userInput));
         } else if (commandWord == CommandWord.TODO) {
             return new TodoCommand(parseTodoDescription(userInput));
+        } else if (commandWord == CommandWord.DEADLINE) {
+            String[] parts = parseDeadline(userInput);
+            return new DeadlineCommand(parts[0], parts[1]);
         }
 
         throw new DukeyException("I'm sorry, but I don't know what that means :-(");

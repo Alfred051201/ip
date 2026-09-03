@@ -112,11 +112,8 @@ public class Dukey {
 
             } else if (command == CommandWord.DEADLINE) {
                 try {
-                    String[] parts = this.parser.parseDeadline(userInput);
-                    Task newTask = new Deadline(parts[0], parts[1]);
-                    this.tasks.add(newTask);
-                    saveTasks();
-                    this.ui.showTaskAdded(newTask, this.tasks);
+                    Command deadlineCommand = this.parser.parse(userInput);
+                    deadlineCommand.execute(this.tasks, this.ui, this.storage);
 
                 } catch (DukeyException e) {
                     this.ui.showError(e.getMessage());
