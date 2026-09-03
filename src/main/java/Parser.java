@@ -23,6 +23,9 @@ public class Parser {
         } else if (commandWord == CommandWord.MARK) {
             return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
                     "Please provide a task number to mark."));
+        } else if (commandWord == CommandWord.UNMARK) {
+            return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
+                    "Please provide a task number to unmark."));
         }
 
         throw new DukeyException("I'm sorry, but I don't know what that means :-(");

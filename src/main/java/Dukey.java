@@ -78,16 +78,8 @@ public class Dukey {
                 }
             } else if (command == CommandWord.UNMARK) {
                 try {
-                    int taskNumber = this.parser.parseTaskNumber(userInput, CommandWord.UNMARK,
-                            "Please provide a task number to unmark.");
-                    if (!this.tasks.isValidTaskNumber(taskNumber)) {
-                        throw new DukeyException("Please provide a valid task number.");
-                    }
-
-                    Task task = this.tasks.get(taskNumber);
-                    task.markAsUndone();
-                    saveTasks();
-                    this.ui.showTaskUnmarked(task);
+                    Command unmarkCommand = this.parser.parse(userInput);
+                    unmarkCommand.execute(this.tasks, this.ui, this.storage);
                 } catch (NumberFormatException e) {
                     this.ui.showError("Please provide a valid task number.");
                 } catch (DukeyException e) {
