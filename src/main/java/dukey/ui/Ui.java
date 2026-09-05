@@ -48,6 +48,13 @@ public class Ui {
         }
     }
 
+    public void showMatchingTasks(TaskList tasks) {
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 1; i <= tasks.size(); i++) {
+            System.out.println(String.format("%d.%s", i, tasks.get(i)));
+        }
+    }
+
     public void showTasksOnDate(TaskList tasks, LocalDate date) {
         boolean hasMatchingTask = false;
 

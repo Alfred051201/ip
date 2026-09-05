@@ -138,4 +138,32 @@ public class TaskListTest {
         assertSame(firstTask, tasks.get(1));
         assertSame(thirdTask, tasks.get(2));
     }
+
+    @Test
+    public void find_keywordWithMatches_returnsMatchingTasksInOriginalOrder() {
+        TaskList tasks = new TaskList();
+        Task firstTask = new Todo("read book");
+        Task secondTask = new Todo("return book");
+        Task thirdTask = new Todo("buy bread");
+        tasks.add(firstTask);
+        tasks.add(secondTask);
+        tasks.add(thirdTask);
+
+        TaskList matchingTasks = tasks.find("book");
+
+        assertEquals(2, matchingTasks.size());
+        assertSame(firstTask, matchingTasks.get(1));
+        assertSame(secondTask, matchingTasks.get(2));
+    }
+
+    @Test
+    public void find_keywordWithoutMatches_returnsEmptyTaskList() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("read book"));
+        tasks.add(new Todo("return book"));
+
+        TaskList matchingTasks = tasks.find("bread");
+
+        assertEquals(0, matchingTasks.size());
+    }
 }

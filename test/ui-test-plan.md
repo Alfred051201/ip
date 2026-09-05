@@ -55,6 +55,55 @@ E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
 T | 1 | join sports club
 ```
 
+## Test Case: Finds tasks by keyword
+
+Aim: Verify that the `find` command lists tasks whose descriptions contain the given keyword.
+
+Initial data:
+```text
+T | 1 | read book
+D | 1 | return book | 2099-12-06 1800
+E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
+T | 1 | join sports club
+```
+
+Input:
+```text
+find book
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ____        _              
+|  _ \ _   _| | _____ _   _ 
+| | | | | | | |/ / _ \ | | |
+| |_| | |_| |   <  __/ |_| |
+|____/ \__,_|_|\_\___|\__, |
+                       |___/ 
+
+Hello! I'm Dukey.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: Dec 06 2099, 6:00pm)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Expected data:
+```text
+T | 1 | read book
+D | 1 | return book | 2099-12-06 1800
+E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
+T | 1 | join sports club
+```
+
 ## Test Case: Shows error for invalid saved date time
 
 Aim: Verify that Storage reports malformed saved date-time data when loading tasks from disk.

@@ -9,6 +9,7 @@ import dukey.command.DeadlineCommand;
 import dukey.command.DeleteCommand;
 import dukey.command.EventCommand;
 import dukey.command.ExitCommand;
+import dukey.command.FindCommand;
 import dukey.command.ListCommand;
 import dukey.command.MarkCommand;
 import dukey.command.OnCommand;
@@ -47,6 +48,8 @@ public class Parser {
             } else if (commandWord == CommandWord.DELETE) {
                 return new DeleteCommand(parseTaskNumber(userInput, CommandWord.DELETE,
                         "Please provide a task number to delete."));
+            } else if (commandWord == CommandWord.FIND) {
+                return new FindCommand(parseFindKeyword(userInput));
             }
         } catch (NumberFormatException e) {
             throw new DukeyException("Please provide a valid task number.");
@@ -91,6 +94,15 @@ public class Parser {
         }
 
         return description;
+    }
+
+    public String parseFindKeyword(String userInput) throws DukeyException {
+        String keyword = getCommandArguments(userInput, CommandWord.FIND);
+        if (keyword.isEmpty()) {
+            throw new DukeyException("Please provide a keyword to find.");
+        }
+
+        return keyword;
     }
 
     public String[] parseDeadline(String userInput) throws DukeyException {

@@ -12,6 +12,7 @@ public enum CommandWord {
     DEADLINE("deadline"),
     EVENT("event"),
     DELETE("delete"),
+    FIND("find"),
     ON("on");
 
     private final String word;

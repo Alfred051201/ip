@@ -28,6 +28,18 @@ public class TaskList {
         return this.tasks.remove(taskNumber - 1);
     }
 
+    public TaskList find(String keyword) {
+        TaskList matchingTasks = new TaskList();
+
+        for (Task task : this.tasks) {
+            if (task.containsKeyword(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+
+        return matchingTasks;
+    }
+
     public int size() {
         return this.tasks.size();
     }

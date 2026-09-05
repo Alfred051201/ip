@@ -16,6 +16,7 @@ import dukey.command.DeadlineCommand;
 import dukey.command.DeleteCommand;
 import dukey.command.EventCommand;
 import dukey.command.ExitCommand;
+import dukey.command.FindCommand;
 import dukey.command.ListCommand;
 import dukey.command.MarkCommand;
 import dukey.command.OnCommand;
@@ -59,6 +60,7 @@ public class ParserTest {
         assertInstanceOf(MarkCommand.class, parser.parse("mark 1"));
         assertInstanceOf(UnmarkCommand.class, parser.parse("unmark 1"));
         assertInstanceOf(DeleteCommand.class, parser.parse("delete 1"));
+        assertInstanceOf(FindCommand.class, parser.parse("find book"));
     }
 
     @Test
@@ -122,6 +124,23 @@ public class ParserTest {
                 () -> parser.parseTodoDescription("todo"));
 
         assertEquals("The description of a todo cannot be empty.", exception.getMessage());
+    }
+
+    @Test
+    public void parseFindKeyword_validKeyword_returnsKeyword() throws DukeyException {
+        Parser parser = new Parser();
+
+        assertEquals("book", parser.parseFindKeyword("find book"));
+    }
+
+    @Test
+    public void parseFindKeyword_emptyKeyword_throwsDukeyException() {
+        Parser parser = new Parser();
+
+        DukeyException exception = assertThrows(DukeyException.class,
+                () -> parser.parseFindKeyword("find"));
+
+        assertEquals("Please provide a keyword to find.", exception.getMessage());
     }
 
     @Test
