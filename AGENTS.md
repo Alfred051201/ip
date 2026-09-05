@@ -38,3 +38,8 @@ Do not commit or push unless explicitly asked.
 
 Maintain JUnit test coverage for roughly the top 50% highest-value methods in the codebase, prioritizing complex, core, or critical business logic over simple getters and boilerplate.
 After each code change, review and update the relevant JUnit tests so the test suite continues to comply with this coverage target.
+
+## Coding standard
+
+Follow the project-specific `seedu-java-coding-standard` skill for all Java code in this project.
+New and modified Java code must comply with the SE-EDU Java basic and intermediate coding standard.
