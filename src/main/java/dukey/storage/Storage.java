@@ -21,10 +21,22 @@ import dukey.task.Todo;
 public class Storage {
     private final String filePath;
 
+    /**
+     * Creates a storage handler for the given data file path.
+     *
+     * @param filePath Path to the task data file.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads saved tasks from the data file.
+     *
+     * @return Task list loaded from disk.
+     * @throws FileNotFoundException If the data file does not exist.
+     * @throws DukeyException If the data file contains invalid task data.
+     */
     public TaskList load() throws FileNotFoundException, DukeyException {
         TaskList tasks = new TaskList();
         File file = new File(this.filePath);
@@ -38,6 +50,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves all tasks to the data file.
+     *
+     * @param tasks Tasks to save.
+     * @throws DukeyException If the data directory or file cannot be written.
+     */
     public void save(TaskList tasks) throws DukeyException {
         File file = new File(this.filePath);
         File parentDirectory = file.getParentFile();
