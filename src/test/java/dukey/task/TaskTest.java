@@ -2,6 +2,7 @@ package dukey.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
@@ -42,6 +43,20 @@ public class TaskTest {
         Task task = new Task("read book");
 
         assertFalse(task.occursOn(LocalDate.of(2099, 12, 6)));
+    }
+
+    @Test
+    public void containsKeyword_matchingKeyword_returnsTrue() {
+        Task task = new Task("read book");
+
+        assertTrue(task.containsKeyword("book"));
+    }
+
+    @Test
+    public void containsKeyword_nonMatchingKeyword_returnsFalse() {
+        Task task = new Task("read book");
+
+        assertFalse(task.containsKeyword("bread"));
     }
 
     @Test

@@ -54,6 +54,24 @@ public class TaskList {
     }
 
     /**
+     * Returns tasks whose descriptions contain the given keyword.
+     *
+     * @param keyword Keyword to search for.
+     * @return Task list containing matching tasks in their original order.
+     */
+    public TaskList find(String keyword) {
+        TaskList matchingTasks = new TaskList();
+
+        for (Task task : this.tasks) {
+            if (task.containsKeyword(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+
+        return matchingTasks;
+    }
+
+    /**
      * Returns the number of tasks in the list.
      *
      * @return Task count.
