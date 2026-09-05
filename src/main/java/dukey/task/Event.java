@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 
 import dukey.exception.DukeyException;
 
-public class Event extends Task{
+public class Event extends Task {
     private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
 

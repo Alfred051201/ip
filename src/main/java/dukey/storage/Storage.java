@@ -68,7 +68,7 @@ public class Storage {
             }
         }
 
-        try (FileWriter fw = new FileWriter(file)) {
+        try (FileWriter fileWriter = new FileWriter(file)) {
             for (int i = 1; i <= tasks.size(); i++) {
                 Task task = tasks.get(i);
                 String fileLine = task.toFileString();
@@ -76,8 +76,8 @@ public class Storage {
                 if (fileLine.isEmpty()) {
                     throw new DukeyException("Could not save an unknown task type.");
                 }
-                fw.write(fileLine);
-                fw.write(System.lineSeparator());
+                fileWriter.write(fileLine);
+                fileWriter.write(System.lineSeparator());
             }
         } catch (IOException e) {
             throw new DukeyException("Could not save tasks to file.");

@@ -1,6 +1,6 @@
 # UI Test Plan
 
-Program command: `java -cp src/main/java Dukey`
+Program command: `java -cp src/main/java dukey.Dukey`
 Compile command: `javac -cp src/main/java $(find src/main/java -name '*.java')`
 Data file: `src/main/data/dukey.txt`
 

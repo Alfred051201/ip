@@ -37,7 +37,7 @@ test {
 }
 
 application {
-    mainClass = 'Dukey'
+    mainClass = 'dukey.Dukey'
 }
 
 jar {

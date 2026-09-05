@@ -1,3 +1,5 @@
+package dukey;
+
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -43,10 +45,10 @@ public class Dukey {
      * Starts the command loop and processes user commands until the user exits.
      */
     public void run() {
-        boolean conversation = true;
+        boolean isRunning = true;
         Scanner scanner = new Scanner(System.in);
 
-        while (conversation && scanner.hasNextLine()) {
+        while (isRunning && scanner.hasNextLine()) {
             String userInput = scanner.nextLine();
 
             this.ui.showLine();
@@ -54,7 +56,7 @@ public class Dukey {
             try {
                 Command command = this.parser.parse(userInput);
                 command.execute(this.tasks, this.ui, this.storage);
-                conversation = !command.isExit();
+                isRunning = !command.isExit();
             } catch (DukeyException e) {
                 this.ui.showError(e.getMessage());
             }
