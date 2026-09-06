@@ -1,6 +1,3 @@
-/**
- * Adds a todo task to the task list.
- */
 package dukey.command;
 
 import dukey.exception.DukeyException;
@@ -10,9 +7,17 @@ import dukey.task.TaskList;
 import dukey.task.Todo;
 import dukey.ui.Ui;
 
+/**
+ * Adds a todo task to the task list.
+ */
 public class TodoCommand extends Command {
     private final String description;
 
+    /**
+     * Creates a command that adds a todo task.
+     *
+     * @param description description of the todo task.
+     */
     public TodoCommand(String description) {
         this.description = description;
     }

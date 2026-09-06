@@ -73,8 +73,9 @@ public class EventTest {
 
     @Test
     public void constructor_startAfterEnd_throwsDukeyException() {
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> new Event("project meeting", "2099-08-06 1600", "2099-08-06 1400"));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            new Event("project meeting", "2099-08-06 1600", "2099-08-06 1400");
+        });
 
         assertEquals("Event start date/time cannot be later than end date/time.", exception.getMessage());
     }

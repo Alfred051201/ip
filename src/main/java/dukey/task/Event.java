@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter;
 
 import dukey.exception.DukeyException;
 
+/**
+ * Represents a task that occurs from one date/time to another.
+ */
 public class Event extends Task {
     private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
@@ -13,6 +16,14 @@ public class Event extends Task {
     protected LocalDateTime from;
     protected LocalDateTime to;
 
+    /**
+     * Creates an event task with the given description and date/time range.
+     *
+     * @param description description of the event task.
+     * @param from start date/time of the event.
+     * @param to end date/time of the event.
+     * @throws DukeyException if the start date/time is after the end date/time.
+     */
     public Event(String description, String from, String to) throws DukeyException {
         super(description);
         this.from = LocalDateTime.parse(from, INPUT_FORMAT);
