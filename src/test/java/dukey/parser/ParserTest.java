@@ -196,6 +196,17 @@ public class ParserTest {
     }
 
     @Test
+    public void parseEvent_keywordsInsideDescription_ignoresNonKeywordTokens() throws DukeyException {
+        Parser parser = new Parser();
+
+        String[] parts = parser.parseEvent("event discuss /fromage and /together /from 2099-12-06 1400 "
+                + "/to 2099-12-06 1600");
+
+        assertArrayEquals(new String[] {"discuss /fromage and /together", "2099-12-06 1400", "2099-12-06 1600"},
+                parts);
+    }
+
+    @Test
     public void parseEvent_missingToKeyword_throwsDukeyException() {
         Parser parser = new Parser();
 
