@@ -56,7 +56,7 @@ public class MainWindow extends AnchorPane {
         String response = dukey.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeyDialog(response, dukeyImage));
+                DialogBox.getDukeyDialog(response, dukeyImage, dukey.getResponseStyleClass()));
         userInput.clear();
 
         if (dukey.isExit()) {

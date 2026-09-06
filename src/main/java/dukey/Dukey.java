@@ -22,6 +22,7 @@ public class Dukey {
     private Ui ui;
     private Parser parser;
     private boolean isExit;
+    private String responseStyleClass;
 
     /**
      * Creates a Dukey chatbot that loads and saves tasks at the given file path.
@@ -42,6 +43,7 @@ public class Dukey {
         this.ui = new Ui();
         this.parser = new Parser();
         this.isExit = false;
+        this.responseStyleClass = Command.STYLE_DEFAULT;
 
         if (shouldShowWelcome) {
             this.ui.showWelcome();
@@ -96,11 +98,22 @@ public class Dukey {
             Command command = this.parser.parse(userInput);
             command.execute(this.tasks, responseUi, this.storage);
             this.isExit = command.isExit();
+            this.responseStyleClass = command.getResponseStyleClass();
         } catch (DukeyException e) {
             responseUi.showError(e.getMessage());
+            this.responseStyleClass = Command.STYLE_ERROR;
         }
 
         return outputStream.toString(StandardCharsets.UTF_8).trim();
+    }
+
+    /**
+     * Returns the CSS class for the most recent GUI response.
+     *
+     * @return CSS class representing the most recent response type.
+     */
+    public String getResponseStyleClass() {
+        return this.responseStyleClass;
     }
 
     /**

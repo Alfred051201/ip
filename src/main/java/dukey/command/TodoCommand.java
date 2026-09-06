@@ -29,4 +29,9 @@ public class TodoCommand extends Command {
         storage.save(tasks);
         ui.showTaskAdded(task, tasks);
     }
+
+    @Override
+    public String getResponseStyleClass() {
+        return STYLE_ADD;
+    }
 }

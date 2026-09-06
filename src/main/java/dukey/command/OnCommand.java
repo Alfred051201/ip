@@ -20,4 +20,9 @@ public class OnCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         ui.showTasksOnDate(tasks, this.date);
     }
+
+    @Override
+    public String getResponseStyleClass() {
+        return STYLE_SEARCH;
+    }
 }

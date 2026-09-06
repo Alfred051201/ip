@@ -26,4 +26,9 @@ public class DeleteCommand extends Command {
         storage.save(tasks);
         ui.showTaskDeleted(task, tasks);
     }
+
+    @Override
+    public String getResponseStyleClass() {
+        return STYLE_DELETE;
+    }
 }

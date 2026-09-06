@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import dukey.command.Command;
+
 public class DukeyTest {
     @TempDir
     private Path temporaryDirectory;
@@ -25,6 +27,7 @@ public class DukeyTest {
 
         assertEquals("Here are the tasks in your list:\n1.[T][X] read book", response);
         assertFalse(dukey.isExit());
+        assertEquals(Command.STYLE_SEARCH, dukey.getResponseStyleClass());
     }
 
     @Test
@@ -36,5 +39,17 @@ public class DukeyTest {
 
         assertEquals("Bye. Hope to see you again soon!", response);
         assertTrue(dukey.isExit());
+        assertEquals(Command.STYLE_EXIT, dukey.getResponseStyleClass());
+    }
+
+    @Test
+    public void getResponse_invalidCommand_returnsErrorStyle() {
+        Path dataFile = temporaryDirectory.resolve("dukey.txt");
+        Dukey dukey = new Dukey(dataFile.toString(), false);
+
+        String response = dukey.getResponse("unknown");
+
+        assertEquals("OOPS!!! I'm sorry, but I don't know what that means :-(", response);
+        assertEquals(Command.STYLE_ERROR, dukey.getResponseStyleClass());
     }
 }

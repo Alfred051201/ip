@@ -27,4 +27,9 @@ public class UnmarkCommand extends Command {
         storage.save(tasks);
         ui.showTaskUnmarked(task);
     }
+
+    @Override
+    public String getResponseStyleClass() {
+        return STYLE_STATUS;
+    }
 }

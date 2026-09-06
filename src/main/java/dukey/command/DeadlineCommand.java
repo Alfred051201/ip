@@ -32,4 +32,9 @@ public class DeadlineCommand extends Command {
         storage.save(tasks);
         ui.showTaskAdded(task, tasks);
     }
+
+    @Override
+    public String getResponseStyleClass() {
+        return STYLE_ADD;
+    }
 }
