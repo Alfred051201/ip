@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
-import dukey.command.Command;
 import dukey.command.CommandWord;
 import dukey.command.DeadlineCommand;
 import dukey.command.DeleteCommand;
@@ -56,7 +55,8 @@ public class ParserTest {
         assertInstanceOf(OnCommand.class, parser.parse("on 2099-12-06"));
         assertInstanceOf(TodoCommand.class, parser.parse("todo read book"));
         assertInstanceOf(DeadlineCommand.class, parser.parse("deadline return book /by 2099-12-06 1800"));
-        assertInstanceOf(EventCommand.class, parser.parse("event meeting /from 2099-12-06 1400 /to 2099-12-06 1600"));
+        assertInstanceOf(EventCommand.class,
+                parser.parse("event meeting /from 2099-12-06 1400 /to 2099-12-06 1600"));
         assertInstanceOf(MarkCommand.class, parser.parse("mark 1"));
         assertInstanceOf(UnmarkCommand.class, parser.parse("unmark 1"));
         assertInstanceOf(DeleteCommand.class, parser.parse("delete 1"));
@@ -103,8 +103,9 @@ public class ParserTest {
     public void parseTaskNumber_emptyTaskNumber_throwsDukeyException() {
         Parser parser = new Parser();
 
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> parser.parseTaskNumber("delete", CommandWord.DELETE, "Please provide a task number to delete."));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseTaskNumber("delete", CommandWord.DELETE, "Please provide a task number to delete.");
+        });
 
         assertEquals("Please provide a task number to delete.", exception.getMessage());
     }
@@ -120,8 +121,9 @@ public class ParserTest {
     public void parseTodoDescription_emptyDescription_throwsDukeyException() {
         Parser parser = new Parser();
 
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> parser.parseTodoDescription("todo"));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseTodoDescription("todo");
+        });
 
         assertEquals("The description of a todo cannot be empty.", exception.getMessage());
     }
@@ -137,8 +139,9 @@ public class ParserTest {
     public void parseFindKeyword_emptyKeyword_throwsDukeyException() {
         Parser parser = new Parser();
 
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> parser.parseFindKeyword("find"));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseFindKeyword("find");
+        });
 
         assertEquals("Please provide a keyword to find.", exception.getMessage());
     }
@@ -165,8 +168,9 @@ public class ParserTest {
     public void parseDeadline_missingByKeyword_throwsDukeyException() {
         Parser parser = new Parser();
 
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> parser.parseDeadline("deadline return book"));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseDeadline("deadline return book");
+        });
 
         assertEquals("Please use: deadline {DESCRIPTION} /by {WHEN}", exception.getMessage());
     }
@@ -175,8 +179,9 @@ public class ParserTest {
     public void parseDeadline_emptyByValue_throwsDukeyException() {
         Parser parser = new Parser();
 
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> parser.parseDeadline("deadline return book /by"));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseDeadline("deadline return book /by");
+        });
 
         assertEquals("Please provide a deadline task date/time after /by.", exception.getMessage());
     }
@@ -194,8 +199,9 @@ public class ParserTest {
     public void parseEvent_missingToKeyword_throwsDukeyException() {
         Parser parser = new Parser();
 
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> parser.parseEvent("event meeting /from 2099-12-06 1400"));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseEvent("event meeting /from 2099-12-06 1400");
+        });
 
         assertEquals("Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}", exception.getMessage());
     }
@@ -204,8 +210,9 @@ public class ParserTest {
     public void parseEvent_emptyFromValue_throwsDukeyException() {
         Parser parser = new Parser();
 
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> parser.parseEvent("event meeting /from /to 2099-12-06 1600"));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseEvent("event meeting /from /to 2099-12-06 1600");
+        });
 
         assertEquals("Please provide a event task date/time after /from.", exception.getMessage());
     }

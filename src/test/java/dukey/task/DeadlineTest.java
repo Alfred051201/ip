@@ -51,8 +51,9 @@ public class DeadlineTest {
 
     @Test
     public void constructor_pastDateTime_throwsDukeyException() {
-        DukeyException exception = assertThrows(DukeyException.class,
-                () -> new Deadline("return book", "2000-12-06 1800"));
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            new Deadline("return book", "2000-12-06 1800");
+        });
 
         assertEquals("Deadline date/time cannot be in the past.", exception.getMessage());
     }

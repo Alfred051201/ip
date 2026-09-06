@@ -1,7 +1,7 @@
 package dukey.command;
 
-import dukey.task.TaskList;
 import dukey.storage.Storage;
+import dukey.task.TaskList;
 import dukey.ui.Ui;
 
 /**
