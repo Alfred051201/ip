@@ -18,4 +18,9 @@ public class FindCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         ui.showMatchingTasks(tasks.find(this.keyword));
     }
+
+    @Override
+    public String getResponseStyleClass() {
+        return STYLE_SEARCH;
+    }
 }

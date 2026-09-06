@@ -1,5 +1,6 @@
 package dukey.ui;
 
+import java.io.PrintStream;
 import java.time.LocalDate;
 
 import dukey.task.Task;
@@ -10,6 +11,23 @@ import dukey.task.TaskList;
  */
 public class Ui {
     private static final String LINE = "____________________________________________________________";
+    private final PrintStream output;
+
+    /**
+     * Creates a UI that writes to the standard output.
+     */
+    public Ui() {
+        this(System.out);
+    }
+
+    /**
+     * Creates a UI that writes to the given output stream.
+     *
+     * @param output Output stream used for user-facing messages.
+     */
+    public Ui(PrintStream output) {
+        this.output = output;
+    }
 
     /**
      * Shows the welcome banner and greeting.
@@ -22,9 +40,9 @@ public class Ui {
                 + "|____/ \\__,_|_|\\_\\___|\\__, |\n"
                 + "                       |___/ \n";
         showLine();
-        System.out.println(banner);
-        System.out.println("Hello! I'm Dukey.");
-        System.out.println("What can I do for you?");
+        this.output.println(banner);
+        this.output.println("Hello! I'm Dukey.");
+        this.output.println("What can I do for you?");
         showLine();
     }
 
@@ -32,21 +50,21 @@ public class Ui {
      * Shows the divider line.
      */
     public void showLine() {
-        System.out.println(LINE);
+        this.output.println(LINE);
     }
 
     /**
      * Shows the goodbye message.
      */
     public void showBye() {
-        System.out.println("Bye. Hope to see you again soon!");
+        this.output.println("Bye. Hope to see you again soon!");
     }
 
     /**
      * Shows an error message for data loading failures.
      */
     public void showLoadingError() {
-        System.out.println("File not found");
+        this.output.println("File not found");
     }
 
     /**
@@ -55,7 +73,7 @@ public class Ui {
      * @param message Error details to show.
      */
     public void showError(String message) {
-        System.out.println(" OOPS!!! " + message);
+        this.output.println(" OOPS!!! " + message);
     }
 
     /**
@@ -64,9 +82,9 @@ public class Ui {
      * @param tasks Tasks to show.
      */
     public void showList(TaskList tasks) {
-        System.out.println("Here are the tasks in your list:");
+        this.output.println("Here are the tasks in your list:");
         for (int i = 1; i <= tasks.size(); i++) {
-            System.out.println(String.format("%d.%s", i, tasks.get(i)));
+            this.output.println(String.format("%d.%s", i, tasks.get(i)));
         }
     }
 
@@ -76,9 +94,9 @@ public class Ui {
      * @param tasks Matching tasks to show.
      */
     public void showMatchingTasks(TaskList tasks) {
-        System.out.println("Here are the matching tasks in your list:");
+        this.output.println("Here are the matching tasks in your list:");
         for (int i = 1; i <= tasks.size(); i++) {
-            System.out.println(String.format("%d.%s", i, tasks.get(i)));
+            this.output.println(String.format("%d.%s", i, tasks.get(i)));
         }
     }
 
@@ -91,17 +109,17 @@ public class Ui {
     public void showTasksOnDate(TaskList tasks, LocalDate date) {
         boolean hasMatchingTask = false;
 
-        System.out.println("Here are the deadlines and events on that date:");
+        this.output.println("Here are the deadlines and events on that date:");
         for (int i = 1; i <= tasks.size(); i++) {
             Task task = tasks.get(i);
             if (task.occursOn(date)) {
-                System.out.println(String.format("%d.%s", i, task));
+                this.output.println(String.format("%d.%s", i, task));
                 hasMatchingTask = true;
             }
         }
 
         if (!hasMatchingTask) {
-            System.out.println("There are no deadlines or events on that date.");
+            this.output.println("There are no deadlines or events on that date.");
         }
     }
 
@@ -111,7 +129,7 @@ public class Ui {
      * @param tasks Tasks to count.
      */
     public void showTaskCount(TaskList tasks) {
-        System.out.println(String.format("Now you have %d tasks in the list.", tasks.size()));
+        this.output.println(String.format("Now you have %d tasks in the list.", tasks.size()));
     }
 
     /**
@@ -121,8 +139,8 @@ public class Ui {
      * @param tasks Updated task list.
      */
     public void showTaskAdded(Task task, TaskList tasks) {
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task);
+        this.output.println("Got it. I've added this task:");
+        this.output.println("  " + task);
         showTaskCount(tasks);
     }
 
@@ -132,8 +150,8 @@ public class Ui {
      * @param task Marked task.
      */
     public void showTaskMarked(Task task) {
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + task);
+        this.output.println("Nice! I've marked this task as done:");
+        this.output.println("  " + task);
     }
 
     /**
@@ -142,8 +160,8 @@ public class Ui {
      * @param task Unmarked task.
      */
     public void showTaskUnmarked(Task task) {
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + task);
+        this.output.println("OK, I've marked this task as not done yet:");
+        this.output.println("  " + task);
     }
 
     /**
@@ -153,8 +171,8 @@ public class Ui {
      * @param tasks Updated task list.
      */
     public void showTaskDeleted(Task task, TaskList tasks) {
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + task);
+        this.output.println("Noted. I've removed this task:");
+        this.output.println("  " + task);
         showTaskCount(tasks);
     }
 }

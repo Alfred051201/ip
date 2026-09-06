@@ -1,7 +1,7 @@
 # UI Test Plan
 
-Program command: `java -cp src/main/java dukey.Dukey`
-Compile command: `javac -cp src/main/java $(find src/main/java -name '*.java')`
+Program command: `java -cp build/classes/java/main:build/resources/main dukey.Dukey`
+Compile command: `./gradlew classes`
 Data file: `src/main/data/dukey.txt`
 
 ## Test Case: Loads tasks with date times from disk

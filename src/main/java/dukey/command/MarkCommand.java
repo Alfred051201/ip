@@ -27,4 +27,9 @@ public class MarkCommand extends Command {
         storage.save(tasks);
         ui.showTaskMarked(task);
     }
+
+    @Override
+    public String getResponseStyleClass() {
+        return STYLE_STATUS;
+    }
 }
