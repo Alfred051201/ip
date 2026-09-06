@@ -224,6 +224,16 @@ public class Parser {
         return "Please use a valid date/time format.";
     }
 
+    /**
+     * Parses an input string into parts separated by one or more command keywords.
+     * The varargs parameter lets commands pass the exact number of keywords they need.
+     *
+     * @param input Arguments to parse, without the command word.
+     * @param errorMessage Message to show if a required keyword is missing.
+     * @param keywords Keywords that separate the expected parts.
+     * @return Parts split around the given keywords.
+     * @throws DukeyException If any keyword is missing.
+     */
     private String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
         String[] result = new String[keywords.length + 1];
 
