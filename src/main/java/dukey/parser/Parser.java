@@ -21,6 +21,11 @@ import dukey.exception.DukeyException;
  * Makes sense of user input by identifying commands and extracting command arguments.
  */
 public class Parser {
+    private static final int DESCRIPTION_INDEX = 0;
+    private static final int DEADLINE_BY_INDEX = 1;
+    private static final int EVENT_FROM_INDEX = 1;
+    private static final int EVENT_TO_INDEX = 2;
+
     /**
      * Parses raw user input into an executable command.
      *
@@ -46,11 +51,11 @@ public class Parser {
                     return new TodoCommand(parseTodoDescription(userInput));
                 case DEADLINE: {
                     String[] parts = parseDeadline(userInput);
-                    return new DeadlineCommand(parts[0], parts[1]);
+                    return new DeadlineCommand(parts[DESCRIPTION_INDEX], parts[DEADLINE_BY_INDEX]);
                 }
                 case EVENT: {
                     String[] parts = parseEvent(userInput);
-                    return new EventCommand(parts[0], parts[1], parts[2]);
+                    return new EventCommand(parts[DESCRIPTION_INDEX], parts[EVENT_FROM_INDEX], parts[EVENT_TO_INDEX]);
                 }
                 case MARK:
                     return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
@@ -168,11 +173,11 @@ public class Parser {
         }
 
         String[] parts = parseByKeywords(input, "Please use: deadline {DESCRIPTION} /by {WHEN}", "/by");
-        if (parts[0].isEmpty()) {
+        if (parts[DESCRIPTION_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a deadline task description.");
         }
 
-        if (parts[1].isEmpty()) {
+        if (parts[DEADLINE_BY_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a deadline task date/time after /by.");
         }
 
@@ -194,15 +199,15 @@ public class Parser {
 
         String[] parts = parseByKeywords(input, "Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}",
                 "/from", "/to");
-        if (parts[0].isEmpty()) {
+        if (parts[DESCRIPTION_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a event task description.");
         }
 
-        if (parts[1].isEmpty()) {
+        if (parts[EVENT_FROM_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a event task date/time after /from.");
         }
 
-        if (parts[2].isEmpty()) {
+        if (parts[EVENT_TO_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a event task date/time after /to.");
         }
 
