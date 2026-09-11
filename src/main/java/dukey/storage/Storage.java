@@ -119,18 +119,22 @@ public class Storage {
     }
 
     private Task createTask(String[] parts) throws DukeyException {
-        if (parts[0].equals("T")) {
+        String taskType = parts[0];
+
+        if (taskType.equals("T")) {
             return new Todo(parts[2]);
-        } else if (parts[0].equals("D")) {
+        } else if (taskType.equals("D")) {
             if (parts.length < 4 || parts[3].isEmpty()) {
                 throw new DukeyException("Deadline date/time is missing for this task.");
             }
             return new Deadline(parts[2], parts[3]);
-        } else {
+        } else if (taskType.equals("E")) {
             if (parts.length < 5 || parts[3].isEmpty() || parts[4].isEmpty()) {
                 throw new DukeyException("Event date/time is missing for this task.");
             }
             return new Event(parts[2], parts[3], parts[4]);
         }
+
+        throw new DukeyException("Undefined task type.");
     }
 }
