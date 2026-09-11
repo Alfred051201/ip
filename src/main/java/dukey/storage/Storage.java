@@ -127,6 +127,7 @@ public class Storage {
             }
             return new Deadline(parts[2], parts[3]);
         } else {
+            assert parts[0].equals("E") : "Only event tasks should reach this branch.";
             if (parts.length < 5 || parts[3].isEmpty() || parts[4].isEmpty()) {
                 throw new DukeyException("Event date/time is missing for this task.");
             }

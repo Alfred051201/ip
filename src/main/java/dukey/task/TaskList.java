@@ -40,6 +40,7 @@ public class TaskList {
      * @return Matching task.
      */
     public Task get(int taskNumber) {
+        assert isValidTaskNumber(taskNumber) : "Task number should be valid before getting a task.";
         return this.tasks.get(taskNumber - 1);
     }
 
@@ -50,6 +51,7 @@ public class TaskList {
      * @return Deleted task.
      */
     public Task delete(int taskNumber) {
+        assert isValidTaskNumber(taskNumber) : "Task number should be valid before deleting a task.";
         return this.tasks.remove(taskNumber - 1);
     }
 
