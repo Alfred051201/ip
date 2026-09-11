@@ -248,19 +248,7 @@ public class Parser {
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];
 
-            int keywordIndex = input.indexOf(keyword, currentStart);
-
-            if (keywordIndex == -1) {
-                throw new DukeyException(errorMessage);
-            }
-
-            while (keywordIndex != -1
-                    && ((keywordIndex > 0 && input.charAt(keywordIndex - 1) != ' ')
-                    || (keywordIndex + keyword.length() < input.length()
-                    && input.charAt(keywordIndex + keyword.length()) != ' '))) {
-                keywordIndex = input.indexOf(keyword, keywordIndex + 1);
-            }
-
+            int keywordIndex = findKeywordIndex(input, keyword, currentStart);
             if (keywordIndex == -1) {
                 throw new DukeyException(errorMessage);
             }
@@ -275,5 +263,26 @@ public class Parser {
 
         result[keywords.length] = input.substring(currentStart).trim();
         return result;
+    }
+
+    private int findKeywordIndex(String input, String keyword, int startIndex) {
+        int keywordIndex = input.indexOf(keyword, startIndex);
+        while (keywordIndex != -1 && !isKeywordDelimited(input, keyword, keywordIndex)) {
+            keywordIndex = input.indexOf(keyword, keywordIndex + 1);
+        }
+        return keywordIndex;
+    }
+
+    private boolean isKeywordDelimited(String input, String keyword, int keywordIndex) {
+        return isStartOfWord(input, keywordIndex) && isEndOfWord(input, keyword, keywordIndex);
+    }
+
+    private boolean isStartOfWord(String input, int keywordIndex) {
+        return keywordIndex == 0 || input.charAt(keywordIndex - 1) == ' ';
+    }
+
+    private boolean isEndOfWord(String input, String keyword, int keywordIndex) {
+        int nextIndex = keywordIndex + keyword.length();
+        return nextIndex == input.length() || input.charAt(nextIndex) == ' ';
     }
 }
