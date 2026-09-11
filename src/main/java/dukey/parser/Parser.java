@@ -30,41 +30,47 @@ public class Parser {
      */
     public Command parse(String userInput) throws DukeyException {
         CommandWord commandWord = parseCommand(userInput);
+        if (commandWord == null) {
+            throw new DukeyException("I'm sorry, but I don't know what that means :-(");
+        }
 
         try {
-            if (commandWord == CommandWord.BYE) {
-                return new ExitCommand();
-            } else if (commandWord == CommandWord.LIST) {
-                return new ListCommand();
-            } else if (commandWord == CommandWord.ON) {
-                return new OnCommand(parseOnDate(userInput));
-            } else if (commandWord == CommandWord.TODO) {
-                return new TodoCommand(parseTodoDescription(userInput));
-            } else if (commandWord == CommandWord.DEADLINE) {
-                String[] parts = parseDeadline(userInput);
-                return new DeadlineCommand(parts[0], parts[1]);
-            } else if (commandWord == CommandWord.EVENT) {
-                String[] parts = parseEvent(userInput);
-                return new EventCommand(parts[0], parts[1], parts[2]);
-            } else if (commandWord == CommandWord.MARK) {
-                return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
-                        "Please provide a task number to mark."));
-            } else if (commandWord == CommandWord.UNMARK) {
-                return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
-                        "Please provide a task number to unmark."));
-            } else if (commandWord == CommandWord.DELETE) {
-                return new DeleteCommand(parseTaskNumber(userInput, CommandWord.DELETE,
-                        "Please provide a task number to delete."));
-            } else if (commandWord == CommandWord.FIND) {
-                return new FindCommand(parseFindKeyword(userInput));
+            switch (commandWord) {
+                case BYE:
+                    return new ExitCommand();
+                case LIST:
+                    return new ListCommand();
+                case ON:
+                    return new OnCommand(parseOnDate(userInput));
+                case TODO:
+                    return new TodoCommand(parseTodoDescription(userInput));
+                case DEADLINE: {
+                    String[] parts = parseDeadline(userInput);
+                    return new DeadlineCommand(parts[0], parts[1]);
+                }
+                case EVENT: {
+                    String[] parts = parseEvent(userInput);
+                    return new EventCommand(parts[0], parts[1], parts[2]);
+                }
+                case MARK:
+                    return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
+                            "Please provide a task number to mark."));
+                case UNMARK:
+                    return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
+                            "Please provide a task number to unmark."));
+                case DELETE:
+                    return new DeleteCommand(parseTaskNumber(userInput, CommandWord.DELETE,
+                            "Please provide a task number to delete."));
+                case FIND:
+                    return new FindCommand(parseFindKeyword(userInput));
+                default:
+                    throw new DukeyException("I'm sorry, but I don't know what that means :-(");
             }
         } catch (NumberFormatException e) {
             throw new DukeyException("Please provide a valid task number.");
         } catch (DateTimeParseException e) {
             throw new DukeyException(getDateFormatMessage(commandWord));
         }
-
-        throw new DukeyException("I'm sorry, but I don't know what that means :-(");
     }
 
     /**
