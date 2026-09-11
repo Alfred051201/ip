@@ -13,7 +13,8 @@ public enum CommandWord {
     EVENT("event"),
     DELETE("delete"),
     FIND("find"),
-    ON("on");
+    ON("on"),
+    UNKNOWN("");
 
     private final String word;
 

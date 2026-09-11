@@ -3,7 +3,6 @@ package dukey.parser;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -40,10 +39,10 @@ public class ParserTest {
     }
 
     @Test
-    public void parseCommand_commandPrefixOnly_returnsNull() {
+    public void parseCommand_commandPrefixOnly_returnsUnknown() {
         Parser parser = new Parser();
 
-        assertNull(parser.parseCommand("listening"));
+        assertEquals(CommandWord.UNKNOWN, parser.parseCommand("listening"));
     }
 
     @Test

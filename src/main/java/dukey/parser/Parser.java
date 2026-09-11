@@ -35,7 +35,7 @@ public class Parser {
      */
     public Command parse(String userInput) throws DukeyException {
         CommandWord commandWord = parseCommand(userInput);
-        if (commandWord == null) {
+        if (commandWord == CommandWord.UNKNOWN) {
             throw new DukeyException("I'm sorry, but I don't know what that means :-(");
         }
 
@@ -82,15 +82,15 @@ public class Parser {
      * Parses the command word from raw user input.
      *
      * @param userInput Full command entered by the user.
-     * @return Matching command word, or null if the command is unknown.
+     * @return Matching command word, or UNKNOWN if the command is unknown.
      */
     public CommandWord parseCommand(String userInput) {
         for (CommandWord command : CommandWord.values()) {
-            if (isCommand(userInput, command)) {
+            if (command != CommandWord.UNKNOWN && isCommand(userInput, command)) {
                 return command;
             }
         }
-        return null;
+        return CommandWord.UNKNOWN;
     }
 
     /**
