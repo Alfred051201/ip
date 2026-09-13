@@ -10,7 +10,6 @@ import dukey.exception.DukeyException;
  * Represents a task that occurs from one date/time to another.
  */
 public class Event extends Task {
-    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
 
     protected LocalDateTime from;
@@ -26,8 +25,8 @@ public class Event extends Task {
      */
     public Event(String description, String from, String to) throws DukeyException {
         super(description);
-        this.from = LocalDateTime.parse(from, INPUT_FORMAT);
-        this.to = LocalDateTime.parse(to, INPUT_FORMAT);
+        this.from = LocalDateTime.parse(from, STORAGE_DATE_TIME_FORMAT);
+        this.to = LocalDateTime.parse(to, STORAGE_DATE_TIME_FORMAT);
 
         if (this.from.isAfter(this.to)) {
             throw new DukeyException("Event start date/time cannot be later than end date/time.");
@@ -49,7 +48,8 @@ public class Event extends Task {
 
     @Override
     public String toFileString() {
-        return String.format("E | %d | %s | %s | %s", this.isDone ? 1 : 0, this.description,
-                this.from.format(INPUT_FORMAT), this.to.format(INPUT_FORMAT));
+        return String.format("E | %d | %s | %s | %s |%s", this.isDone ? 1 : 0, this.description,
+                this.from.format(STORAGE_DATE_TIME_FORMAT), this.to.format(STORAGE_DATE_TIME_FORMAT),
+                getDoneAtStorageText());
     }
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,15 +25,15 @@ public class DeadlineTest {
     public void toFileString_newDeadline_returnsStorageFormatWithInputDateTime() throws DukeyException {
         Deadline deadline = new Deadline("return book", "2099-12-06 1800");
 
-        assertEquals("D | 0 | return book | 2099-12-06 1800", deadline.toFileString());
+        assertEquals("D | 0 | return book | 2099-12-06 1800 |", deadline.toFileString());
     }
 
     @Test
     public void toFileString_doneDeadline_returnsStorageFormatWithDoneStatus() throws DukeyException {
         Deadline deadline = new Deadline("return book", "2099-12-06 1800");
-        deadline.markAsDone();
+        deadline.markAsDone(LocalDateTime.of(2026, 9, 14, 14, 30));
 
-        assertEquals("D | 1 | return book | 2099-12-06 1800", deadline.toFileString());
+        assertEquals("D | 1 | return book | 2099-12-06 1800 | 2026-09-14 1430", deadline.toFileString());
     }
 
     @Test

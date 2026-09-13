@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,15 +26,16 @@ public class EventTest {
     public void toFileString_newEvent_returnsStorageFormatWithInputDateTimes() throws DukeyException {
         Event event = new Event("project meeting", "2099-08-06 1400", "2099-08-06 1600");
 
-        assertEquals("E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600", event.toFileString());
+        assertEquals("E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |", event.toFileString());
     }
 
     @Test
     public void toFileString_doneEvent_returnsStorageFormatWithDoneStatus() throws DukeyException {
         Event event = new Event("project meeting", "2099-08-06 1400", "2099-08-06 1600");
-        event.markAsDone();
+        event.markAsDone(LocalDateTime.of(2026, 9, 14, 14, 30));
 
-        assertEquals("E | 1 | project meeting | 2099-08-06 1400 | 2099-08-06 1600", event.toFileString());
+        assertEquals("E | 1 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 | 2026-09-14 1430",
+                event.toFileString());
     }
 
     @Test

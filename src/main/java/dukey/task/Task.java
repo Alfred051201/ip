@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 
 /**
@@ -11,6 +12,8 @@ import java.time.temporal.TemporalAdjusters;
  */
 
 public class Task {
+    public static final DateTimeFormatter STORAGE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+
     protected String description;
     protected boolean isDone;
     protected LocalDateTime doneAt;
@@ -146,5 +149,18 @@ public class Task {
      */
     public String toFileString() {
         return "";
+    }
+
+    /**
+     * Formats the completion timestamp for saving.
+     *
+     * @return Completion timestamp with a leading space, or an empty string if it is unknown.
+     */
+    protected String getDoneAtStorageText() {
+        if (this.doneAt == null) {
+            return "";
+        }
+
+        return " " + this.doneAt.format(STORAGE_DATE_TIME_FORMAT);
     }
 }

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -40,6 +41,25 @@ public class StorageTest {
         assertEquals("[D][ ] return book (by: Dec 06 2099, 6:00pm)", tasks.get(2).toString());
         assertEquals("[E][ ] project meeting (from: Aug 06 2099, 2:00pm to: Aug 06 2099, 4:00pm)",
                 tasks.get(3).toString());
+    }
+
+    @Test
+    public void load_savedTasksWithCompletionDates_returnsTaskListWithCompletionDates() throws Exception {
+        Path dataFile = tempDir.resolve("tasks.txt");
+        Files.writeString(dataFile, String.join(System.lineSeparator(),
+                "T | 1 | read book | 2026-09-14 1430",
+                "D | 1 | return book | 2099-12-06 1800 | 2026-09-07 0900",
+                "E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |",
+                ""));
+        Storage storage = new Storage(dataFile.toString());
+
+        TaskList tasks = storage.load();
+
+        assertEquals(3, tasks.size());
+        assertEquals(2, tasks.countCompletedTasks());
+        assertEquals(1, tasks.countPendingTasks());
+        assertEquals(1, tasks.countCompletedInCalendarWeek(LocalDate.of(2026, 9, 14)));
+        assertEquals(2, tasks.countCompletedInCalendarMonth(LocalDate.of(2026, 9, 30)));
     }
 
     @Test
@@ -100,6 +120,26 @@ public class StorageTest {
     }
 
     @Test
+    public void load_savedTaskWithInvalidCompletionDateTime_throwsDukeyException() throws IOException {
+        Path dataFile = writeDataFile("T | 1 | read book | not-a-date");
+        Storage storage = new Storage(dataFile.toString());
+
+        DukeyException exception = assertThrows(DukeyException.class, storage::load);
+
+        assertEquals("Saved date/time must use format: yyyy-MM-dd HHmm", exception.getMessage());
+    }
+
+    @Test
+    public void load_undoneSavedTaskWithCompletionDateTime_throwsDukeyException() throws IOException {
+        Path dataFile = writeDataFile("T | 0 | read book | 2026-09-14 1430");
+        Storage storage = new Storage(dataFile.toString());
+
+        DukeyException exception = assertThrows(DukeyException.class, storage::load);
+
+        assertEquals("Undone saved tasks should not have a completion date/time.", exception.getMessage());
+    }
+
+    @Test
     public void save_taskList_writesTasksInStorageFormat() throws Exception {
         Path dataFile = tempDir.resolve("tasks.txt");
         TaskList tasks = new TaskList();
@@ -113,9 +153,9 @@ public class StorageTest {
         storage.save(tasks);
 
         assertEquals(String.join(System.lineSeparator(),
-                "T | 1 | read book",
-                "D | 0 | return book | 2099-12-06 1800",
-                "E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600",
+                "T | 1 | read book |",
+                "D | 0 | return book | 2099-12-06 1800 |",
+                "E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |",
                 ""), Files.readString(dataFile));
     }
 
@@ -128,7 +168,7 @@ public class StorageTest {
 
         storage.save(tasks);
 
-        assertEquals("T | 0 | read book" + System.lineSeparator(), Files.readString(dataFile));
+        assertEquals("T | 0 | read book |" + System.lineSeparator(), Files.readString(dataFile));
     }
 
     @Test
