@@ -49,10 +49,10 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
-D | 0 | return book | 2099-12-06 1800
-E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
-T | 1 | join sports club
+T | 1 | read book |
+D | 0 | return book | 2099-12-06 1800 |
+E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |
+T | 1 | join sports club |
 ```
 
 ## Test Case: Finds tasks by keyword
@@ -98,10 +98,101 @@ ____________________________________________________________
 
 Expected data:
 ```text
+T | 1 | read book |
+D | 1 | return book | 2099-12-06 1800 |
+E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |
+T | 1 | join sports club |
+```
+
+## Test Case: Shows task statistics
+
+Aim: Verify that the `stats` command reports total, completed, pending, current-week, and current-month counts.
+
+Initial data:
+```text
 T | 1 | read book
 D | 1 | return book | 2099-12-06 1800
-E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
-T | 1 | join sports club
+T | 0 | borrow book
+```
+
+Input:
+```text
+stats
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ____        _              
+|  _ \ _   _| | _____ _   _ 
+| | | | | | | |/ / _ \ | | |
+| |_| | |_| |   <  __/ |_| |
+|____/ \__,_|_|\_\___|\__, |
+                       |___/ 
+
+Hello! I'm Dukey.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are your task statistics:
+Total tasks: 3
+Completed tasks: 2
+Pending tasks: 1
+Completed in the current calendar week: 0
+Completed in the current calendar month: 0
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Expected data:
+```text
+T | 1 | read book |
+D | 1 | return book | 2099-12-06 1800 |
+T | 0 | borrow book |
+```
+
+## Test Case: Rejects stats arguments
+
+Aim: Verify that the `stats` command rejects extra arguments and does not change saved task data.
+
+Initial data:
+```text
+T | 1 | read book
+```
+
+Input:
+```text
+stats today
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ____        _              
+|  _ \ _   _| | _____ _   _ 
+| | | | | | | |/ / _ \ | | |
+| |_| | |_| |   <  __/ |_| |
+|____/ \__,_|_|\_\___|\__, |
+                       |___/ 
+
+Hello! I'm Dukey.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ OOPS!!! The stats command does not take any arguments.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+Expected data:
+```text
+T | 1 | read book |
 ```
 
 ## Test Case: Shows error for invalid saved date time
@@ -185,11 +276,11 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
-D | 0 | return book | 2099-12-06 1800
-E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
-T | 1 | join sports club
-T | 0 | borrow book
+T | 1 | read book |
+D | 0 | return book | 2099-12-06 1800 |
+E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |
+T | 1 | join sports club |
+T | 0 | borrow book |
 ```
 
 ## Test Case: Saves added deadline and event automatically
@@ -238,9 +329,9 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
-D | 0 | return book | 2099-12-02 1800
-E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
+T | 1 | read book |
+D | 0 | return book | 2099-12-02 1800 |
+E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |
 ```
 
 ## Test Case: Saves mark and unmark automatically
@@ -288,14 +379,6 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-Expected data:
-```text
-T | 1 | read book
-D | 1 | return book | 2099-12-06 1800
-E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
-T | 0 | join sports club
-```
-
 ## Test Case: Saves delete automatically
 
 Aim: Verify that deleting a task removes it from the data file.
@@ -339,9 +422,9 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
-D | 0 | return book | 2099-12-06 1800
-T | 1 | join sports club
+T | 1 | read book |
+D | 0 | return book | 2099-12-06 1800 |
+T | 1 | join sports club |
 ```
 
 ## Test Case: Rejects invalid command inputs
@@ -401,10 +484,10 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
-D | 0 | return book | 2099-12-06 1800
-E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600
-T | 1 | join sports club
+T | 1 | read book |
+D | 0 | return book | 2099-12-06 1800 |
+E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |
+T | 1 | join sports club |
 ```
 
 ## Test Case: Rejects past deadline
@@ -445,7 +528,7 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
+T | 1 | read book |
 ```
 
 ## Test Case: Lists deadlines and events on a date
@@ -501,10 +584,10 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
-D | 0 | return book | 2099-12-06 1800
-E | 0 | project meeting | 2099-12-06 1400 | 2099-12-07 1600
-D | 0 | submit report | 2099-12-08 0900
+T | 1 | read book |
+D | 0 | return book | 2099-12-06 1800 |
+E | 0 | project meeting | 2099-12-06 1400 | 2099-12-07 1600 |
+D | 0 | submit report | 2099-12-08 0900 |
 ```
 
 ## Test Case: Rejects invalid on command dates
@@ -550,8 +633,8 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
-D | 0 | return book | 2099-12-06 1800
+T | 1 | read book |
+D | 0 | return book | 2099-12-06 1800 |
 ```
 
 ## Test Case: Rejects event whose start is after end
@@ -592,5 +675,5 @@ ____________________________________________________________
 
 Expected data:
 ```text
-T | 1 | read book
+T | 1 | read book |
 ```
