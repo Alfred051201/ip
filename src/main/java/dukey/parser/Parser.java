@@ -42,9 +42,11 @@ public class Parser {
                 return new TodoCommand(parseTodoDescription(userInput));
             } else if (commandWord == CommandWord.DEADLINE) {
                 String[] parts = parseDeadline(userInput);
+                assert parts.length == 2 : "Deadline parsing should return description and by date/time.";
                 return new DeadlineCommand(parts[0], parts[1]);
             } else if (commandWord == CommandWord.EVENT) {
                 String[] parts = parseEvent(userInput);
+                assert parts.length == 3 : "Event parsing should return description, from date/time, and to date/time.";
                 return new EventCommand(parts[0], parts[1], parts[2]);
             } else if (commandWord == CommandWord.MARK) {
                 return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
@@ -235,6 +237,7 @@ public class Parser {
      * @throws DukeyException If any keyword is missing.
      */
     private String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
+        assert keywords.length > 0 : "Parser keyword helper should receive at least one keyword.";
         String[] result = new String[keywords.length + 1];
 
         int currentStart = 0;
