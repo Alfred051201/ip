@@ -19,6 +19,22 @@ import dukey.task.Todo;
  * Handles loading tasks from the data file and saving tasks to the data file.
  */
 public class Storage {
+    private static final int TASK_TYPE_INDEX = 0;
+    private static final int DONE_STATUS_INDEX = 1;
+    private static final int DESCRIPTION_INDEX = 2;
+    private static final int DEADLINE_BY_INDEX = 3;
+    private static final int EVENT_FROM_INDEX = 3;
+    private static final int EVENT_TO_INDEX = 4;
+    private static final int MINIMUM_TASK_FIELD_COUNT = 3;
+    private static final int MINIMUM_DEADLINE_FIELD_COUNT = 4;
+    private static final int MINIMUM_EVENT_FIELD_COUNT = 5;
+
+    private static final String TODO_TASK_TYPE = "T";
+    private static final String DEADLINE_TASK_TYPE = "D";
+    private static final String EVENT_TASK_TYPE = "E";
+    private static final String DONE_STATUS = "1";
+    private static final String NOT_DONE_STATUS = "0";
+
     private final String filePath;
 
     /**
@@ -88,28 +104,28 @@ public class Storage {
         try {
             String[] parts = fileLine.split("\\s*\\|\\s*");
 
-            if (parts.length < 3) {
+            if (parts.length < MINIMUM_TASK_FIELD_COUNT) {
                 throw new DukeyException("Saved task is missing fields.");
             }
 
-            if (!Arrays.asList("T", "D", "E").contains(parts[0])) {
+            if (!Arrays.asList(TODO_TASK_TYPE, DEADLINE_TASK_TYPE, EVENT_TASK_TYPE).contains(parts[TASK_TYPE_INDEX])) {
                 throw new DukeyException("Undefined task type.");
             }
 
-            if (parts[1].isEmpty()) {
+            if (parts[DONE_STATUS_INDEX].isEmpty()) {
                 throw new DukeyException("Done status is missing for this task.");
             }
 
-            if (!Arrays.asList("0", "1").contains(parts[1])) {
+            if (!Arrays.asList(NOT_DONE_STATUS, DONE_STATUS).contains(parts[DONE_STATUS_INDEX])) {
                 throw new DukeyException("Undefined done status.");
             }
 
-            if (parts[2].isEmpty()) {
+            if (parts[DESCRIPTION_INDEX].isEmpty()) {
                 throw new DukeyException("Description is missing for this task.");
             }
 
             Task task = createTask(parts);
-            if (parts[1].equals("1")) {
+            if (parts[DONE_STATUS_INDEX].equals(DONE_STATUS)) {
                 task.markAsDone();
             }
             return task;
@@ -119,19 +135,25 @@ public class Storage {
     }
 
     private Task createTask(String[] parts) throws DukeyException {
-        if (parts[0].equals("T")) {
-            return new Todo(parts[2]);
-        } else if (parts[0].equals("D")) {
-            if (parts.length < 4 || parts[3].isEmpty()) {
+        String taskType = parts[TASK_TYPE_INDEX];
+
+        if (taskType.equals(TODO_TASK_TYPE)) {
+            return new Todo(parts[DESCRIPTION_INDEX]);
+        } else if (taskType.equals(DEADLINE_TASK_TYPE)) {
+            if (parts.length < MINIMUM_DEADLINE_FIELD_COUNT || parts[DEADLINE_BY_INDEX].isEmpty()) {
                 throw new DukeyException("Deadline date/time is missing for this task.");
             }
-            return new Deadline(parts[2], parts[3]);
-        } else {
-            assert parts[0].equals("E") : "Only event tasks should reach this branch.";
-            if (parts.length < 5 || parts[3].isEmpty() || parts[4].isEmpty()) {
+            return new Deadline(parts[DESCRIPTION_INDEX], parts[DEADLINE_BY_INDEX]);
+        } else if (taskType.equals(EVENT_TASK_TYPE)) {
+            assert taskType.equals(EVENT_TASK_TYPE) : "Only event tasks should reach this branch.";
+            if (parts.length < MINIMUM_EVENT_FIELD_COUNT
+                    || parts[EVENT_FROM_INDEX].isEmpty()
+                    || parts[EVENT_TO_INDEX].isEmpty()) {
                 throw new DukeyException("Event date/time is missing for this task.");
             }
-            return new Event(parts[2], parts[3], parts[4]);
+            return new Event(parts[DESCRIPTION_INDEX], parts[EVENT_FROM_INDEX], parts[EVENT_TO_INDEX]);
         }
+
+        throw new DukeyException("Undefined task type.");
     }
 }

@@ -21,6 +21,11 @@ import dukey.exception.DukeyException;
  * Makes sense of user input by identifying commands and extracting command arguments.
  */
 public class Parser {
+    private static final int DESCRIPTION_INDEX = 0;
+    private static final int DEADLINE_BY_INDEX = 1;
+    private static final int EVENT_FROM_INDEX = 1;
+    private static final int EVENT_TO_INDEX = 2;
+
     /**
      * Parses raw user input into an executable command.
      *
@@ -30,58 +35,65 @@ public class Parser {
      */
     public Command parse(String userInput) throws DukeyException {
         CommandWord commandWord = parseCommand(userInput);
+        if (commandWord == CommandWord.UNKNOWN) {
+            throw new DukeyException("I'm sorry, but I don't know what that means :-(");
+        }
 
         try {
-            if (commandWord == CommandWord.BYE) {
-                return new ExitCommand();
-            } else if (commandWord == CommandWord.LIST) {
-                return new ListCommand();
-            } else if (commandWord == CommandWord.ON) {
-                return new OnCommand(parseOnDate(userInput));
-            } else if (commandWord == CommandWord.TODO) {
-                return new TodoCommand(parseTodoDescription(userInput));
-            } else if (commandWord == CommandWord.DEADLINE) {
-                String[] parts = parseDeadline(userInput);
-                assert parts.length == 2 : "Deadline parsing should return description and by date/time.";
-                return new DeadlineCommand(parts[0], parts[1]);
-            } else if (commandWord == CommandWord.EVENT) {
-                String[] parts = parseEvent(userInput);
-                assert parts.length == 3 : "Event parsing should return description, from date/time, and to date/time.";
-                return new EventCommand(parts[0], parts[1], parts[2]);
-            } else if (commandWord == CommandWord.MARK) {
-                return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
-                        "Please provide a task number to mark."));
-            } else if (commandWord == CommandWord.UNMARK) {
-                return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
-                        "Please provide a task number to unmark."));
-            } else if (commandWord == CommandWord.DELETE) {
-                return new DeleteCommand(parseTaskNumber(userInput, CommandWord.DELETE,
-                        "Please provide a task number to delete."));
-            } else if (commandWord == CommandWord.FIND) {
-                return new FindCommand(parseFindKeyword(userInput));
+            switch (commandWord) {
+                case BYE:
+                    return new ExitCommand();
+                case LIST:
+                    return new ListCommand();
+                case ON:
+                    return new OnCommand(parseOnDate(userInput));
+                case TODO:
+                    return new TodoCommand(parseTodoDescription(userInput));
+                case DEADLINE: {
+                    String[] parts = parseDeadline(userInput);
+                    assert parts.length == 2 : "Deadline parsing should return description and by date/time.";
+                    return new DeadlineCommand(parts[DESCRIPTION_INDEX], parts[DEADLINE_BY_INDEX]);
+                }
+                case EVENT: {
+                    String[] parts = parseEvent(userInput);
+                    assert parts.length == 3
+                            : "Event parsing should return description, from date/time, and to date/time.";
+                    return new EventCommand(parts[DESCRIPTION_INDEX], parts[EVENT_FROM_INDEX], parts[EVENT_TO_INDEX]);
+                }
+                case MARK:
+                    return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
+                            "Please provide a task number to mark."));
+                case UNMARK:
+                    return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
+                            "Please provide a task number to unmark."));
+                case DELETE:
+                    return new DeleteCommand(parseTaskNumber(userInput, CommandWord.DELETE,
+                            "Please provide a task number to delete."));
+                case FIND:
+                    return new FindCommand(parseFindKeyword(userInput));
+                default:
+                    throw new DukeyException("I'm sorry, but I don't know what that means :-(");
             }
         } catch (NumberFormatException e) {
             throw new DukeyException("Please provide a valid task number.");
         } catch (DateTimeParseException e) {
             throw new DukeyException(getDateFormatMessage(commandWord));
         }
-
-        throw new DukeyException("I'm sorry, but I don't know what that means :-(");
     }
 
     /**
      * Parses the command word from raw user input.
      *
      * @param userInput Full command entered by the user.
-     * @return Matching command word, or null if the command is unknown.
+     * @return Matching command word, or UNKNOWN if the command is unknown.
      */
     public CommandWord parseCommand(String userInput) {
         for (CommandWord command : CommandWord.values()) {
-            if (isCommand(userInput, command)) {
+            if (command != CommandWord.UNKNOWN && isCommand(userInput, command)) {
                 return command;
             }
         }
-        return null;
+        return CommandWord.UNKNOWN;
     }
 
     /**
@@ -164,11 +176,11 @@ public class Parser {
         }
 
         String[] parts = parseByKeywords(input, "Please use: deadline {DESCRIPTION} /by {WHEN}", "/by");
-        if (parts[0].isEmpty()) {
+        if (parts[DESCRIPTION_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a deadline task description.");
         }
 
-        if (parts[1].isEmpty()) {
+        if (parts[DEADLINE_BY_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a deadline task date/time after /by.");
         }
 
@@ -190,15 +202,15 @@ public class Parser {
 
         String[] parts = parseByKeywords(input, "Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}",
                 "/from", "/to");
-        if (parts[0].isEmpty()) {
+        if (parts[DESCRIPTION_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a event task description.");
         }
 
-        if (parts[1].isEmpty()) {
+        if (parts[EVENT_FROM_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a event task date/time after /from.");
         }
 
-        if (parts[2].isEmpty()) {
+        if (parts[EVENT_TO_INDEX].isEmpty()) {
             throw new DukeyException("Please provide a event task date/time after /to.");
         }
 
@@ -245,19 +257,7 @@ public class Parser {
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];
 
-            int keywordIndex = input.indexOf(keyword, currentStart);
-
-            if (keywordIndex == -1) {
-                throw new DukeyException(errorMessage);
-            }
-
-            while (keywordIndex != -1
-                    && ((keywordIndex > 0 && input.charAt(keywordIndex - 1) != ' ')
-                    || (keywordIndex + keyword.length() < input.length()
-                    && input.charAt(keywordIndex + keyword.length()) != ' '))) {
-                keywordIndex = input.indexOf(keyword, keywordIndex + 1);
-            }
-
+            int keywordIndex = findKeywordIndex(input, keyword, currentStart);
             if (keywordIndex == -1) {
                 throw new DukeyException(errorMessage);
             }
@@ -272,5 +272,26 @@ public class Parser {
 
         result[keywords.length] = input.substring(currentStart).trim();
         return result;
+    }
+
+    private int findKeywordIndex(String input, String keyword, int startIndex) {
+        int keywordIndex = input.indexOf(keyword, startIndex);
+        while (keywordIndex != -1 && !isKeywordDelimited(input, keyword, keywordIndex)) {
+            keywordIndex = input.indexOf(keyword, keywordIndex + 1);
+        }
+        return keywordIndex;
+    }
+
+    private boolean isKeywordDelimited(String input, String keyword, int keywordIndex) {
+        return isStartOfWord(input, keywordIndex) && isEndOfWord(input, keyword, keywordIndex);
+    }
+
+    private boolean isStartOfWord(String input, int keywordIndex) {
+        return keywordIndex == 0 || input.charAt(keywordIndex - 1) == ' ';
+    }
+
+    private boolean isEndOfWord(String input, String keyword, int keywordIndex) {
+        int nextIndex = keywordIndex + keyword.length();
+        return nextIndex == input.length() || input.charAt(nextIndex) == ' ';
     }
 }
