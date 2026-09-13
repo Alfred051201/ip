@@ -145,6 +145,7 @@ public class Storage {
             }
             return new Deadline(parts[DESCRIPTION_INDEX], parts[DEADLINE_BY_INDEX]);
         } else if (taskType.equals(EVENT_TASK_TYPE)) {
+            assert taskType.equals(EVENT_TASK_TYPE) : "Only event tasks should reach this branch.";
             if (parts.length < MINIMUM_EVENT_FIELD_COUNT
                     || parts[EVENT_FROM_INDEX].isEmpty()
                     || parts[EVENT_TO_INDEX].isEmpty()) {

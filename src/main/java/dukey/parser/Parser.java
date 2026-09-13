@@ -51,10 +51,13 @@ public class Parser {
                     return new TodoCommand(parseTodoDescription(userInput));
                 case DEADLINE: {
                     String[] parts = parseDeadline(userInput);
+                    assert parts.length == 2 : "Deadline parsing should return description and by date/time.";
                     return new DeadlineCommand(parts[DESCRIPTION_INDEX], parts[DEADLINE_BY_INDEX]);
                 }
                 case EVENT: {
                     String[] parts = parseEvent(userInput);
+                    assert parts.length == 3
+                            : "Event parsing should return description, from date/time, and to date/time.";
                     return new EventCommand(parts[DESCRIPTION_INDEX], parts[EVENT_FROM_INDEX], parts[EVENT_TO_INDEX]);
                 }
                 case MARK:
@@ -246,6 +249,7 @@ public class Parser {
      * @throws DukeyException If any keyword is missing.
      */
     private String[] parseByKeywords(String input, String errorMessage, String... keywords) throws DukeyException {
+        assert keywords.length > 0 : "Parser keyword helper should receive at least one keyword.";
         String[] result = new String[keywords.length + 1];
 
         int currentStart = 0;
