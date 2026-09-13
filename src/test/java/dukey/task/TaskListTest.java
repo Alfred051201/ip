@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
@@ -165,5 +167,49 @@ public class TaskListTest {
         TaskList matchingTasks = tasks.find("bread");
 
         assertEquals(0, matchingTasks.size());
+    }
+
+    @Test
+    public void countCompletedTasks_mixedTaskList_returnsDoneTaskCount() {
+        TaskList tasks = new TaskList();
+        Task firstTask = new Todo("read book");
+        Task secondTask = new Todo("return book");
+        firstTask.markAsDone(LocalDateTime.of(2026, 9, 16, 14, 30));
+        tasks.add(firstTask);
+        tasks.add(secondTask);
+
+        assertEquals(1, tasks.countCompletedTasks());
+        assertEquals(1, tasks.countPendingTasks());
+    }
+
+    @Test
+    public void countCompletedInCalendarWeek_mixedCompletionDates_returnsCurrentWeekCount() {
+        TaskList tasks = new TaskList();
+        Task thisWeekTask = new Todo("read book");
+        Task previousWeekTask = new Todo("return book");
+        Task unknownCompletionTask = new Todo("buy bread");
+        thisWeekTask.markAsDone(LocalDateTime.of(2026, 9, 16, 14, 30));
+        previousWeekTask.markAsDone(LocalDateTime.of(2026, 9, 13, 23, 59));
+        unknownCompletionTask.markAsDone();
+        tasks.add(thisWeekTask);
+        tasks.add(previousWeekTask);
+        tasks.add(unknownCompletionTask);
+
+        assertEquals(1, tasks.countCompletedInCalendarWeek(LocalDate.of(2026, 9, 14)));
+    }
+
+    @Test
+    public void countCompletedInCalendarMonth_mixedCompletionDates_returnsCurrentMonthCount() {
+        TaskList tasks = new TaskList();
+        Task thisMonthTask = new Todo("read book");
+        Task previousMonthTask = new Todo("return book");
+        Task pendingTask = new Todo("buy bread");
+        thisMonthTask.markAsDone(LocalDateTime.of(2026, 9, 1, 0, 0));
+        previousMonthTask.markAsDone(LocalDateTime.of(2026, 8, 31, 23, 59));
+        tasks.add(thisMonthTask);
+        tasks.add(previousMonthTask);
+        tasks.add(pendingTask);
+
+        assertEquals(1, tasks.countCompletedInCalendarMonth(LocalDate.of(2026, 9, 30)));
     }
 }
