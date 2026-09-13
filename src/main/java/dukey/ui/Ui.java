@@ -124,6 +124,23 @@ public class Ui {
     }
 
     /**
+     * Shows useful statistics about the task list.
+     *
+     * @param tasks Tasks to summarize.
+     * @param date Date used to define the current calendar week and month.
+     */
+    public void showStatistics(TaskList tasks, LocalDate date) {
+        this.output.println("Here are your task statistics:");
+        this.output.println(String.format("Total tasks: %d", tasks.size()));
+        this.output.println(String.format("Completed tasks: %d", tasks.countCompletedTasks()));
+        this.output.println(String.format("Pending tasks: %d", tasks.countPendingTasks()));
+        this.output.println(String.format("Completed in the current calendar week: %d",
+                tasks.countCompletedInCalendarWeek(date)));
+        this.output.println(String.format("Completed in the current calendar month: %d",
+                tasks.countCompletedInCalendarMonth(date)));
+    }
+
+    /**
      * Shows the current number of tasks.
      *
      * @param tasks Tasks to count.

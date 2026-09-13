@@ -15,6 +15,7 @@ public abstract class Command {
     public static final String STYLE_ERROR = "error-response-label";
     public static final String STYLE_EXIT = "exit-response-label";
     public static final String STYLE_SEARCH = "search-response-label";
+    public static final String STYLE_STATS = "stats-response-label";
     public static final String STYLE_STATUS = "status-response-label";
 
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws DukeyException;

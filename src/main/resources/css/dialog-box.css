@@ -38,6 +38,11 @@
     -fx-border-color: #9dbbea;
 }
 
+.stats-response-label {
+    -fx-background-color: #e4f7f8;
+    -fx-border-color: #8ed0d5;
+}
+
 .exit-response-label {
     -fx-background-color: #eeeaf8;
     -fx-border-color: #bcaee0;
