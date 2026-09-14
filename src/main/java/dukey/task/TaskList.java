@@ -1,5 +1,6 @@
 package dukey.task;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -71,6 +72,62 @@ public class TaskList {
         }
 
         return matchingTasks;
+    }
+
+    /**
+     * Counts done tasks in the list.
+     *
+     * @return Number of done tasks.
+     */
+    public int countCompletedTasks() {
+        int count = 0;
+        for (Task task : this.tasks) {
+            if (task.isDone()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Counts tasks that are not done.
+     *
+     * @return Number of pending tasks.
+     */
+    public int countPendingTasks() {
+        return size() - countCompletedTasks();
+    }
+
+    /**
+     * Counts tasks completed in the calendar week containing the given date.
+     *
+     * @param date Date whose calendar week should be checked.
+     * @return Number of tasks completed in that calendar week.
+     */
+    public int countCompletedInCalendarWeek(LocalDate date) {
+        int count = 0;
+        for (Task task : this.tasks) {
+            if (task.wasCompletedInCalendarWeek(date)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Counts tasks completed in the calendar month containing the given date.
+     *
+     * @param date Date whose calendar month should be checked.
+     * @return Number of tasks completed in that calendar month.
+     */
+    public int countCompletedInCalendarMonth(LocalDate date) {
+        int count = 0;
+        for (Task task : this.tasks) {
+            if (task.wasCompletedInCalendarMonth(date)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**

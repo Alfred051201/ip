@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
 import java.util.Scanner;
 
 import dukey.command.Command;
@@ -40,8 +41,19 @@ public class Dukey {
      * @param shouldShowWelcome Whether to print the welcome message immediately.
      */
     public Dukey(String filePath, boolean shouldShowWelcome) {
+        this(filePath, shouldShowWelcome, Clock.systemDefaultZone());
+    }
+
+    /**
+     * Creates a Dukey chatbot that loads and saves tasks at the given file path.
+     *
+     * @param filePath Path to the task data file.
+     * @param shouldShowWelcome Whether to print the welcome message immediately.
+     * @param clock Clock used by time-sensitive commands.
+     */
+    public Dukey(String filePath, boolean shouldShowWelcome, Clock clock) {
         this.ui = new Ui();
-        this.parser = new Parser();
+        this.parser = new Parser(clock);
         this.isExit = false;
         this.responseStyleClass = Command.STYLE_DEFAULT;
 

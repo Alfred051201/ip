@@ -1,5 +1,6 @@
 package dukey.parser;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
@@ -13,6 +14,7 @@ import dukey.command.FindCommand;
 import dukey.command.ListCommand;
 import dukey.command.MarkCommand;
 import dukey.command.OnCommand;
+import dukey.command.StatsCommand;
 import dukey.command.TodoCommand;
 import dukey.command.UnmarkCommand;
 import dukey.exception.DukeyException;
@@ -25,6 +27,24 @@ public class Parser {
     private static final int DEADLINE_BY_INDEX = 1;
     private static final int EVENT_FROM_INDEX = 1;
     private static final int EVENT_TO_INDEX = 2;
+
+    private final Clock clock;
+
+    /**
+     * Creates a parser that uses the system clock for time-sensitive commands.
+     */
+    public Parser() {
+        this(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Creates a parser that uses the given clock for time-sensitive commands.
+     *
+     * @param clock Clock used by parsed commands that depend on the current date/time.
+     */
+    public Parser(Clock clock) {
+        this.clock = clock;
+    }
 
     /**
      * Parses raw user input into an executable command.
@@ -47,6 +67,9 @@ public class Parser {
                     return new ListCommand();
                 case ON:
                     return new OnCommand(parseOnDate(userInput));
+                case STATS:
+                    parseStats(userInput);
+                    return new StatsCommand(this.clock);
                 case TODO:
                     return new TodoCommand(parseTodoDescription(userInput));
                 case DEADLINE: {
@@ -62,7 +85,7 @@ public class Parser {
                 }
                 case MARK:
                     return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
-                            "Please provide a task number to mark."));
+                            "Please provide a task number to mark."), this.clock);
                 case UNMARK:
                     return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
                             "Please provide a task number to unmark."));
@@ -160,6 +183,19 @@ public class Parser {
         }
 
         return keyword;
+    }
+
+    /**
+     * Checks that a stats command has no arguments.
+     *
+     * @param userInput Full stats command entered by the user.
+     * @throws DukeyException If the stats command has arguments.
+     */
+    public void parseStats(String userInput) throws DukeyException {
+        String arguments = getCommandArguments(userInput, CommandWord.STATS);
+        if (!arguments.isEmpty()) {
+            throw new DukeyException("The stats command does not take any arguments.");
+        }
     }
 
     /**

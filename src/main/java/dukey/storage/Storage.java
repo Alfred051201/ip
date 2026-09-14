@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -25,6 +26,9 @@ public class Storage {
     private static final int DEADLINE_BY_INDEX = 3;
     private static final int EVENT_FROM_INDEX = 3;
     private static final int EVENT_TO_INDEX = 4;
+    private static final int TODO_DONE_AT_INDEX = 3;
+    private static final int DEADLINE_DONE_AT_INDEX = 4;
+    private static final int EVENT_DONE_AT_INDEX = 5;
     private static final int MINIMUM_TASK_FIELD_COUNT = 3;
     private static final int MINIMUM_DEADLINE_FIELD_COUNT = 4;
     private static final int MINIMUM_EVENT_FIELD_COUNT = 5;
@@ -34,6 +38,7 @@ public class Storage {
     private static final String EVENT_TASK_TYPE = "E";
     private static final String DONE_STATUS = "1";
     private static final String NOT_DONE_STATUS = "0";
+    private static final String DATE_TIME_FORMAT_MESSAGE = "Saved date/time must use format: yyyy-MM-dd HHmm";
 
     private final String filePath;
 
@@ -102,7 +107,7 @@ public class Storage {
 
     private Task parseTask(String fileLine) throws DukeyException {
         try {
-            String[] parts = fileLine.split("\\s*\\|\\s*");
+            String[] parts = fileLine.split("\\s*\\|\\s*", -1);
 
             if (parts.length < MINIMUM_TASK_FIELD_COUNT) {
                 throw new DukeyException("Saved task is missing fields.");
@@ -125,12 +130,10 @@ public class Storage {
             }
 
             Task task = createTask(parts);
-            if (parts[DONE_STATUS_INDEX].equals(DONE_STATUS)) {
-                task.markAsDone();
-            }
+            markLoadedTaskIfDone(task, parts);
             return task;
         } catch (DateTimeParseException e) {
-            throw new DukeyException("Saved date/time must use format: yyyy-MM-dd HHmm");
+            throw new DukeyException(DATE_TIME_FORMAT_MESSAGE);
         }
     }
 
@@ -155,5 +158,44 @@ public class Storage {
         }
 
         throw new DukeyException("Undefined task type.");
+    }
+
+    private void markLoadedTaskIfDone(Task task, String[] parts) throws DukeyException {
+        int doneAtIndex = getDoneAtIndex(parts[TASK_TYPE_INDEX]);
+        String doneAtText = getOptionalField(parts, doneAtIndex);
+
+        if (parts[DONE_STATUS_INDEX].equals(NOT_DONE_STATUS)) {
+            if (!doneAtText.isEmpty()) {
+                throw new DukeyException("Undone saved tasks should not have a completion date/time.");
+            }
+            return;
+        }
+
+        if (doneAtText.isEmpty()) {
+            task.markAsDone();
+            return;
+        }
+
+        task.markAsDone(LocalDateTime.parse(doneAtText, Task.STORAGE_DATE_TIME_FORMAT));
+    }
+
+    private int getDoneAtIndex(String taskType) throws DukeyException {
+        if (taskType.equals(TODO_TASK_TYPE)) {
+            return TODO_DONE_AT_INDEX;
+        } else if (taskType.equals(DEADLINE_TASK_TYPE)) {
+            return DEADLINE_DONE_AT_INDEX;
+        } else if (taskType.equals(EVENT_TASK_TYPE)) {
+            return EVENT_DONE_AT_INDEX;
+        }
+
+        throw new DukeyException("Undefined task type.");
+    }
+
+    private String getOptionalField(String[] parts, int index) {
+        if (parts.length <= index) {
+            return "";
+        }
+
+        return parts[index];
     }
 }

@@ -18,6 +18,7 @@ import dukey.command.FindCommand;
 import dukey.command.ListCommand;
 import dukey.command.MarkCommand;
 import dukey.command.OnCommand;
+import dukey.command.StatsCommand;
 import dukey.command.TodoCommand;
 import dukey.command.UnmarkCommand;
 import dukey.exception.DukeyException;
@@ -60,6 +61,7 @@ public class ParserTest {
         assertInstanceOf(UnmarkCommand.class, parser.parse("unmark 1"));
         assertInstanceOf(DeleteCommand.class, parser.parse("delete 1"));
         assertInstanceOf(FindCommand.class, parser.parse("find book"));
+        assertInstanceOf(StatsCommand.class, parser.parse("stats"));
     }
 
     @Test
@@ -143,6 +145,17 @@ public class ParserTest {
         });
 
         assertEquals("Please provide a keyword to find.", exception.getMessage());
+    }
+
+    @Test
+    public void parseStats_extraArguments_throwsDukeyException() {
+        Parser parser = new Parser();
+
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseStats("stats today");
+        });
+
+        assertEquals("The stats command does not take any arguments.", exception.getMessage());
     }
 
     @Test

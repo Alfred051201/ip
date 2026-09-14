@@ -14,6 +14,7 @@ public enum CommandWord {
     DELETE("delete"),
     FIND("find"),
     ON("on"),
+    STATS("stats"),
     UNKNOWN("");
 
     private final String word;

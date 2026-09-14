@@ -10,7 +10,6 @@ import dukey.exception.DukeyException;
  * Represents a task that must be completed by a specific date/time.
  */
 public class Deadline extends Task {
-    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
 
     protected LocalDateTime by;
@@ -24,7 +23,7 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) throws DukeyException {
         super(description);
-        this.by = LocalDateTime.parse(by, INPUT_FORMAT);
+        this.by = LocalDateTime.parse(by, STORAGE_DATE_TIME_FORMAT);
 
         if (this.by.isBefore(LocalDateTime.now())) {
             throw new DukeyException("Deadline date/time cannot be in the past.");
@@ -43,7 +42,7 @@ public class Deadline extends Task {
 
     @Override
     public String toFileString() {
-        return String.format("D | %d | %s | %s", this.isDone ? 1 : 0, this.description,
-                this.by.format(INPUT_FORMAT));
+        return String.format("D | %d | %s | %s |%s", this.isDone ? 1 : 0, this.description,
+                this.by.format(STORAGE_DATE_TIME_FORMAT), getDoneAtStorageText());
     }
 }

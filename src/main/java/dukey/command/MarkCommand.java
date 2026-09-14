@@ -1,5 +1,8 @@
 package dukey.command;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+
 import dukey.exception.DukeyException;
 import dukey.storage.Storage;
 import dukey.task.Task;
@@ -11,9 +14,26 @@ import dukey.ui.Ui;
  */
 public class MarkCommand extends Command {
     private final int taskNumber;
+    private final Clock clock;
 
+    /**
+     * Creates a command that marks the given task using the system clock.
+     *
+     * @param taskNumber One-based task number to mark.
+     */
     public MarkCommand(int taskNumber) {
+        this(taskNumber, Clock.systemDefaultZone());
+    }
+
+    /**
+     * Creates a command that marks the given task using the given clock.
+     *
+     * @param taskNumber One-based task number to mark.
+     * @param clock Clock used to record the completion time.
+     */
+    public MarkCommand(int taskNumber, Clock clock) {
         this.taskNumber = taskNumber;
+        this.clock = clock;
     }
 
     @Override
@@ -23,7 +43,7 @@ public class MarkCommand extends Command {
         }
 
         Task task = tasks.get(this.taskNumber);
-        task.markAsDone();
+        task.markAsDone(LocalDateTime.now(this.clock));
         storage.save(tasks);
         ui.showTaskMarked(task);
     }
