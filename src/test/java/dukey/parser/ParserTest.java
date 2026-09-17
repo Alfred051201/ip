@@ -40,6 +40,13 @@ public class ParserTest {
     }
 
     @Test
+    public void parseCommand_commandWithLeadingAndTrailingSpaces_returnsCommandWord() {
+        Parser parser = new Parser();
+
+        assertEquals(CommandWord.LIST, parser.parseCommand("  list  "));
+    }
+
+    @Test
     public void parseCommand_commandPrefixOnly_returnsUnknown() {
         Parser parser = new Parser();
 
@@ -62,6 +69,13 @@ public class ParserTest {
         assertInstanceOf(DeleteCommand.class, parser.parse("delete 1"));
         assertInstanceOf(FindCommand.class, parser.parse("find book"));
         assertInstanceOf(StatsCommand.class, parser.parse("stats"));
+    }
+
+    @Test
+    public void parse_commandWithLeadingAndTrailingSpaces_returnsCommand() throws DukeyException {
+        Parser parser = new Parser();
+
+        assertInstanceOf(ListCommand.class, parser.parse("  list  "));
     }
 
     @Test
@@ -199,6 +213,17 @@ public class ParserTest {
     }
 
     @Test
+    public void parseDeadline_duplicateByKeyword_throwsDukeyException() {
+        Parser parser = new Parser();
+
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseDeadline("deadline return book /by 2099-12-06 1800 /by 2099-12-07 1800");
+        });
+
+        assertEquals("Please use: deadline {DESCRIPTION} /by {WHEN}", exception.getMessage());
+    }
+
+    @Test
     public void parseEvent_validEvent_returnsDescriptionFromAndTo() throws DukeyException {
         Parser parser = new Parser();
 
@@ -238,5 +263,17 @@ public class ParserTest {
         });
 
         assertEquals("Please provide a event task date/time after /from.", exception.getMessage());
+    }
+
+    @Test
+    public void parseEvent_duplicateKeyword_throwsDukeyException() {
+        Parser parser = new Parser();
+
+        DukeyException exception = assertThrows(DukeyException.class, () -> {
+            parser.parseEvent("event meeting /from 2099-12-06 1400 /from 2099-12-06 1500 "
+                    + "/to 2099-12-06 1600");
+        });
+
+        assertEquals("Please use: event {DESCRIPTION} /from {WHEN} /to {WHEN}", exception.getMessage());
     }
 }

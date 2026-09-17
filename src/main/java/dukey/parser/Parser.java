@@ -54,7 +54,8 @@ public class Parser {
      * @throws DukeyException If the command is unknown or its arguments are invalid.
      */
     public Command parse(String userInput) throws DukeyException {
-        CommandWord commandWord = parseCommand(userInput);
+        String normalizedInput = normalizeCommandInput(userInput);
+        CommandWord commandWord = parseCommand(normalizedInput);
         if (commandWord == CommandWord.UNKNOWN) {
             throw new DukeyException("I'm sorry, but I don't know what that means :-(");
         }
@@ -66,34 +67,34 @@ public class Parser {
                 case LIST:
                     return new ListCommand();
                 case ON:
-                    return new OnCommand(parseOnDate(userInput));
+                    return new OnCommand(parseOnDate(normalizedInput));
                 case STATS:
-                    parseStats(userInput);
+                    parseStats(normalizedInput);
                     return new StatsCommand(this.clock);
                 case TODO:
-                    return new TodoCommand(parseTodoDescription(userInput));
+                    return new TodoCommand(parseTodoDescription(normalizedInput));
                 case DEADLINE: {
-                    String[] parts = parseDeadline(userInput);
+                    String[] parts = parseDeadline(normalizedInput);
                     assert parts.length == 2 : "Deadline parsing should return description and by date/time.";
                     return new DeadlineCommand(parts[DESCRIPTION_INDEX], parts[DEADLINE_BY_INDEX]);
                 }
                 case EVENT: {
-                    String[] parts = parseEvent(userInput);
+                    String[] parts = parseEvent(normalizedInput);
                     assert parts.length == 3
                             : "Event parsing should return description, from date/time, and to date/time.";
                     return new EventCommand(parts[DESCRIPTION_INDEX], parts[EVENT_FROM_INDEX], parts[EVENT_TO_INDEX]);
                 }
                 case MARK:
-                    return new MarkCommand(parseTaskNumber(userInput, CommandWord.MARK,
+                    return new MarkCommand(parseTaskNumber(normalizedInput, CommandWord.MARK,
                             "Please provide a task number to mark."), this.clock);
                 case UNMARK:
-                    return new UnmarkCommand(parseTaskNumber(userInput, CommandWord.UNMARK,
+                    return new UnmarkCommand(parseTaskNumber(normalizedInput, CommandWord.UNMARK,
                             "Please provide a task number to unmark."));
                 case DELETE:
-                    return new DeleteCommand(parseTaskNumber(userInput, CommandWord.DELETE,
+                    return new DeleteCommand(parseTaskNumber(normalizedInput, CommandWord.DELETE,
                             "Please provide a task number to delete."));
                 case FIND:
-                    return new FindCommand(parseFindKeyword(userInput));
+                    return new FindCommand(parseFindKeyword(normalizedInput));
                 default:
                     throw new DukeyException("I'm sorry, but I don't know what that means :-(");
             }
@@ -111,8 +112,9 @@ public class Parser {
      * @return Matching command word, or UNKNOWN if the command is unknown.
      */
     public CommandWord parseCommand(String userInput) {
+        String normalizedInput = normalizeCommandInput(userInput);
         for (CommandWord command : CommandWord.values()) {
-            if (command != CommandWord.UNKNOWN && isCommand(userInput, command)) {
+            if (command != CommandWord.UNKNOWN && isCommand(normalizedInput, command)) {
                 return command;
             }
         }
@@ -259,7 +261,8 @@ public class Parser {
     }
 
     private String getCommandArguments(String userInput, CommandWord command) {
-        return userInput.substring(command.getWord().length()).trim();
+        String normalizedInput = normalizeCommandInput(userInput);
+        return normalizedInput.substring(command.getWord().length()).trim();
     }
 
     private String getDateFormatMessage(CommandWord commandWord) {
@@ -307,7 +310,22 @@ public class Parser {
         }
 
         result[keywords.length] = input.substring(currentStart).trim();
+        ensureNoExtraKeywords(result, errorMessage, keywords);
         return result;
+    }
+
+    private void ensureNoExtraKeywords(String[] parts, String errorMessage, String... keywords) throws DukeyException {
+        for (String part : parts) {
+            for (String keyword : keywords) {
+                if (findKeywordIndex(part, keyword, 0) != -1) {
+                    throw new DukeyException(errorMessage);
+                }
+            }
+        }
+    }
+
+    private String normalizeCommandInput(String userInput) {
+        return userInput.trim();
     }
 
     private int findKeywordIndex(String input, String keyword, int startIndex) {
