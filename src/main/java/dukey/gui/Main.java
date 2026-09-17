@@ -24,8 +24,8 @@ public class Main extends Application {
 
             Scene scene = new Scene(root);
             stage.setTitle("Dukey");
-            stage.setMinHeight(220);
-            stage.setMinWidth(417);
+            stage.setMinHeight(360);
+            stage.setMinWidth(420);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {

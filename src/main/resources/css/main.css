@@ -1,11 +1,13 @@
 .root {
-    -fx-background-color: #f6f7fb;
+    -fx-background-color: #f4f6fa;
 }
 
 .text-field {
     -fx-background-color: #ffffff;
     -fx-border-color: #c9ced8;
-    -fx-font: 16px "Arial";
+    -fx-border-width: 1px 0 0 0;
+    -fx-font: 15px "Arial";
+    -fx-padding: 0 12px;
 }
 
 .button {
@@ -25,6 +27,10 @@
 .scroll-pane,
 .scroll-pane .viewport {
     -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-padding: 4px 0 4px 0;
 }
 
 .scroll-bar {
