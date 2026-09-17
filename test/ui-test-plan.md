@@ -32,8 +32,8 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
@@ -43,7 +43,7 @@ Here are the tasks in your list:
 4.[T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -83,8 +83,8 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
 Here are the matching tasks in your list:
@@ -92,7 +92,7 @@ Here are the matching tasks in your list:
 2.[D][X] return book (by: Dec 06 2099, 6:00pm)
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -131,8 +131,8 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
 Here are your task statistics:
@@ -143,7 +143,7 @@ Completed in the current calendar week: 0
 Completed in the current calendar month: 0
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -179,14 +179,14 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! The stats command does not take any arguments.
+ OOPS!!! The stats command does not take any arguments. Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -221,15 +221,15 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
- OOPS!!! Saved date/time must use format: yyyy-MM-dd HHmm
+ OOPS!!! Saved date/time must use format: yyyy-MM-dd HHmm Let's keep the shelves neat.
 ____________________________________________________________
 Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -261,16 +261,16 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Filed neatly. I've added this task:
   [T][ ] borrow book
 Now you have 5 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -309,21 +309,21 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Filed neatly. I've added this task:
   [D][ ] return book (by: Dec 02 2099, 6:00pm)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Got it. I've added this task:
+Filed neatly. I've added this task:
   [E][ ] project meeting (from: Aug 06 2099, 2:00pm to: Aug 06 2099, 4:00pm)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -363,19 +363,19 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
+Stamped and settled. I've marked this task as done:
   [D][X] return book (by: Dec 06 2099, 6:00pm)
 ____________________________________________________________
 ____________________________________________________________
-OK, I've marked this task as not done yet:
+Back on the shelf. I've marked this task as not done yet:
   [T][ ] join sports club
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -407,16 +407,16 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
-Noted. I've removed this task:
+Removed from the shelf. I've removed this task:
   [E][ ] project meeting (from: Aug 06 2099, 2:00pm to: Aug 06 2099, 4:00pm)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -459,26 +459,26 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! The description of a todo cannot be empty.
+ OOPS!!! The description of a todo cannot be empty. Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! Please use: deadline {DESCRIPTION} /by {WHEN}
+ OOPS!!! Please use: deadline {DESCRIPTION} /by {WHEN} Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! Please provide a event task date/time after /to.
+ OOPS!!! Please provide a event task date/time after /to. Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! Please provide a valid task number.
+ OOPS!!! Please provide a valid task number. Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! I'm sorry, but I don't know what that means :-(
+ OOPS!!! I'm sorry, but I don't know what that means :-( Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -515,14 +515,14 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! Deadline date/time cannot be in the past.
+ OOPS!!! Deadline date/time cannot be in the past. Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -561,8 +561,8 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
 Here are the deadlines and events on that date:
@@ -578,7 +578,7 @@ Here are the deadlines and events on that date:
 There are no deadlines or events on that date.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -617,17 +617,17 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! Please provide a date using format: yyyy-MM-dd
+ OOPS!!! Please provide a date using format: yyyy-MM-dd Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! Please use date format: yyyy-MM-dd
+ OOPS!!! Please use date format: yyyy-MM-dd Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 
@@ -662,14 +662,14 @@ ____________________________________________________________
 |____/ \__,_|_|\_\___|\__, |
                        |___/ 
 
-Hello! I'm Dukey.
-What can I do for you?
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
 ____________________________________________________________
 ____________________________________________________________
- OOPS!!! Event start date/time cannot be later than end date/time.
+ OOPS!!! Event start date/time cannot be later than end date/time. Let's keep the shelves neat.
 ____________________________________________________________
 ____________________________________________________________
-Bye. Hope to see you again soon!
+Bye. The shelves are tidy for now.
 ____________________________________________________________
 ```
 

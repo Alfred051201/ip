@@ -11,6 +11,7 @@ import dukey.task.TaskList;
  */
 public class Ui {
     private static final String LINE = "____________________________________________________________";
+    private static final String BOT_NAME = "Dukey";
     private final PrintStream output;
 
     /**
@@ -41,8 +42,8 @@ public class Ui {
                 + "                       |___/ \n";
         showLine();
         this.output.println(banner);
-        this.output.println("Hello! I'm Dukey.");
-        this.output.println("What can I do for you?");
+        this.output.println("Hello! I'm " + BOT_NAME + ", your calm task librarian.");
+        this.output.println("What shall we shelve, sort, or settle today?");
         showLine();
     }
 
@@ -57,7 +58,7 @@ public class Ui {
      * Shows the goodbye message.
      */
     public void showBye() {
-        this.output.println("Bye. Hope to see you again soon!");
+        this.output.println("Bye. The shelves are tidy for now.");
     }
 
     /**
@@ -73,7 +74,7 @@ public class Ui {
      * @param message Error details to show.
      */
     public void showError(String message) {
-        this.output.println(" OOPS!!! " + message);
+        this.output.println(" OOPS!!! " + message + " Let's keep the shelves neat.");
     }
 
     /**
@@ -156,7 +157,7 @@ public class Ui {
      * @param tasks Updated task list.
      */
     public void showTaskAdded(Task task, TaskList tasks) {
-        this.output.println("Got it. I've added this task:");
+        this.output.println("Filed neatly. I've added this task:");
         this.output.println("  " + task);
         showTaskCount(tasks);
     }
@@ -167,7 +168,7 @@ public class Ui {
      * @param task Marked task.
      */
     public void showTaskMarked(Task task) {
-        this.output.println("Nice! I've marked this task as done:");
+        this.output.println("Stamped and settled. I've marked this task as done:");
         this.output.println("  " + task);
     }
 
@@ -177,7 +178,7 @@ public class Ui {
      * @param task Unmarked task.
      */
     public void showTaskUnmarked(Task task) {
-        this.output.println("OK, I've marked this task as not done yet:");
+        this.output.println("Back on the shelf. I've marked this task as not done yet:");
         this.output.println("  " + task);
     }
 
@@ -188,7 +189,7 @@ public class Ui {
      * @param tasks Updated task list.
      */
     public void showTaskDeleted(Task task, TaskList tasks) {
-        this.output.println("Noted. I've removed this task:");
+        this.output.println("Removed from the shelf. I've removed this task:");
         this.output.println("  " + task);
         showTaskCount(tasks);
     }
