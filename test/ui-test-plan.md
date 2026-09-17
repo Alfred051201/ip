@@ -490,6 +490,55 @@ E | 0 | project meeting | 2099-08-06 1400 | 2099-08-06 1600 |
 T | 1 | join sports club |
 ```
 
+## Test Case: Handles extra spaces and duplicate keywords
+
+Aim: Verify that leading/trailing spaces around commands are accepted, while duplicated command keywords are rejected.
+
+Initial data:
+```text
+T | 1 | read book
+D | 0 | return book | 2099-12-06 1800
+```
+
+Input:
+```text
+  list  
+deadline return book /by 2099-12-06 1800 /by 2099-12-07 1800
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ____        _              
+|  _ \ _   _| | _____ _   _ 
+| | | | | | | |/ / _ \ | | |
+| |_| | |_| |   <  __/ |_| |
+|____/ \__,_|_|\_\___|\__, |
+                       |___/ 
+
+Hello! I'm Dukey, your calm task librarian.
+What shall we shelve, sort, or settle today?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][ ] return book (by: Dec 06 2099, 6:00pm)
+____________________________________________________________
+____________________________________________________________
+ OOPS!!! Please use: deadline {DESCRIPTION} /by {WHEN} Let's keep the shelves neat.
+____________________________________________________________
+____________________________________________________________
+Bye. The shelves are tidy for now.
+____________________________________________________________
+```
+
+Expected data:
+```text
+T | 1 | read book |
+D | 0 | return book | 2099-12-06 1800 |
+```
+
 ## Test Case: Rejects past deadline
 
 Aim: Verify that a deadline with a past date-time is rejected and not saved.
