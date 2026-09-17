@@ -84,6 +84,7 @@ public class DialogBox extends HBox {
         getChildren().setAll(children);
         setAlignment(Pos.TOP_LEFT);
         dialog.getStyleClass().add("reply-label");
+        displayPicture.getStyleClass().add("bot-picture");
     }
 
     private static class CommandStyle {
