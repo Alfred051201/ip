@@ -1,6 +1,6 @@
 # Dukey User Guide
 
-Dukey is a task chatbot that helps you track todos, deadlines, events, and useful task statistics.
+Dukey is a calm task librarian that helps you track todos, deadlines, events, and useful task statistics.
 
 ## Adding Tasks
 

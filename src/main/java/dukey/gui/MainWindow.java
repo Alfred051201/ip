@@ -43,7 +43,8 @@ public class MainWindow extends AnchorPane {
     public void setDukey(Dukey dukey) {
         this.dukey = dukey;
         dialogContainer.getChildren().add(DialogBox.getDukeyDialog(
-                "Hello! I'm Dukey.\nWhat can I do for you?", dukeyImage));
+                "Hello! I'm Dukey, your calm task librarian.\n"
+                        + "What shall we shelve, sort, or settle today?", dukeyImage));
     }
 
     @FXML

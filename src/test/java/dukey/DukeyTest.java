@@ -43,7 +43,7 @@ public class DukeyTest {
 
         String response = dukey.getResponse("bye");
 
-        assertEquals("Bye. Hope to see you again soon!", response);
+        assertEquals("Bye. The shelves are tidy for now.", response);
         assertTrue(dukey.isExit());
         assertEquals(Command.STYLE_EXIT, dukey.getResponseStyleClass());
     }
@@ -55,7 +55,8 @@ public class DukeyTest {
 
         String response = dukey.getResponse("unknown");
 
-        assertEquals("OOPS!!! I'm sorry, but I don't know what that means :-(", response);
+        assertEquals("OOPS!!! I'm sorry, but I don't know what that means :-( Let's keep the shelves neat.",
+                response);
         assertEquals(Command.STYLE_ERROR, dukey.getResponseStyleClass());
     }
 
@@ -85,7 +86,7 @@ public class DukeyTest {
 
         String response = dukey.getResponse("stats today");
 
-        assertEquals("OOPS!!! The stats command does not take any arguments.", response);
+        assertEquals("OOPS!!! The stats command does not take any arguments. Let's keep the shelves neat.", response);
         assertEquals(Command.STYLE_ERROR, dukey.getResponseStyleClass());
     }
 }
