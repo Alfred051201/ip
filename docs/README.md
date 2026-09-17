@@ -94,3 +94,8 @@ Exit Dukey:
 ```text
 bye
 ```
+
+## Credits
+
+This project started from the CS2103/T iP starter template. The JavaFX GUI structure follows the SE-EDU JavaFX tutorial
+used in the course. The bundled avatar images are adapted from the tutorial resources.

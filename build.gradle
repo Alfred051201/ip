@@ -77,7 +77,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveFileName = 'dukey.jar'
     manifest {
         attributes 'Main-Class': application.mainClass.get()
     }
