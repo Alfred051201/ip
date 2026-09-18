@@ -116,7 +116,9 @@ public class Dukey {
             this.responseStyleClass = Command.STYLE_ERROR;
         }
 
-        return outputStream.toString(StandardCharsets.UTF_8).trim();
+        return outputStream.toString(StandardCharsets.UTF_8)
+                .replace(System.lineSeparator(), "\n")
+                .trim();
     }
 
     /**
