@@ -32,7 +32,7 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by.format(OUTPUT_FORMAT) + ")";
+        return "[D]" + super.toString() + " (by: " + formatForDisplay(this.by) + ")";
     }
 
     @Override
@@ -44,5 +44,11 @@ public class Deadline extends Task {
     public String toFileString() {
         return String.format("D | %d | %s | %s |%s", this.isDone ? 1 : 0, this.description,
                 this.by.format(STORAGE_DATE_TIME_FORMAT), getDoneAtStorageText());
+    }
+
+    private String formatForDisplay(LocalDateTime dateTime) {
+        return dateTime.format(OUTPUT_FORMAT)
+                .replace("AM", "am")
+                .replace("PM", "pm");
     }
 }
