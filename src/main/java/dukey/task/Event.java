@@ -35,8 +35,8 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + this.from.format(OUTPUT_FORMAT)
-                + " to: " + this.to.format(OUTPUT_FORMAT) + ")";
+        return "[E]" + super.toString() + " (from: " + formatForDisplay(this.from)
+                + " to: " + formatForDisplay(this.to) + ")";
     }
 
     @Override
@@ -51,5 +51,11 @@ public class Event extends Task {
         return String.format("E | %d | %s | %s | %s |%s", this.isDone ? 1 : 0, this.description,
                 this.from.format(STORAGE_DATE_TIME_FORMAT), this.to.format(STORAGE_DATE_TIME_FORMAT),
                 getDoneAtStorageText());
+    }
+
+    private String formatForDisplay(LocalDateTime dateTime) {
+        return dateTime.format(OUTPUT_FORMAT)
+                .replace("AM", "am")
+                .replace("PM", "pm");
     }
 }
